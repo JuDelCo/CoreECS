@@ -1,0 +1,20 @@
+{
+  "name": "com.judelco.core.ecs",
+  "displayName": "JuDelCo Core ECS",
+  "description": "Deterministic lightweight ECS framework",
+  "version": "0.1.0",
+  "unity": "2018.3",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "core"
+  ],
+  "author": {
+    "name": "JuDelCo",
+    "url": "https://github.com/JuDelCo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuDelCo/CoreECS.git"
+  }
+}
