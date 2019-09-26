@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Ju.ECS.Util;
 
@@ -6,23 +5,23 @@ namespace Ju.ECS
 {
 	public partial class Matcher : IMatcher
 	{
-		private List<Type> allOfTypes;
-		private List<Type> anyOfTypes;
-		private List<Type> noneOfTypes;
-		private List<Type> allTypes;
+		private List<int> allOfTypes;
+		private List<int> anyOfTypes;
+		private List<int> noneOfTypes;
+		private List<int> allTypes;
 
 		private bool isHashCached = false;
 		private int cachedHash = 0;
 
 		private Matcher()
 		{
-			allOfTypes = new List<Type>();
-			anyOfTypes = new List<Type>();
-			noneOfTypes = new List<Type>();
-			allTypes = new List<Type>();
+			allOfTypes = new List<int>();
+			anyOfTypes = new List<int>();
+			noneOfTypes = new List<int>();
+			allTypes = new List<int>();
 		}
 
-		public Matcher(List<Type> allOf, List<Type> anyOf, List<Type> noneOf) : this()
+		public Matcher(List<int> allOf, List<int> anyOf, List<int> noneOf) : this()
 		{
 			AddTypes(allOfTypes, allOf);
 			AddTypes(anyOfTypes, anyOf);
@@ -73,30 +72,30 @@ namespace Ju.ECS
 			return result;
 		}
 
-		public IMatcher AllOf(List<Type> types)
+		public IMatcher AllOf(List<int> componentTypeIds)
 		{
-			AddTypes(allOfTypes, types);
+			AddTypes(allOfTypes, componentTypeIds);
 			return this;
 		}
 
-		public IMatcher AnyOf(List<Type> types)
+		public IMatcher AnyOf(List<int> componentTypeIds)
 		{
-			AddTypes(anyOfTypes, types);
+			AddTypes(anyOfTypes, componentTypeIds);
 			return this;
 		}
 
-		public IMatcher NoneOf(List<Type> types)
+		public IMatcher NoneOf(List<int> componentTypeIds)
 		{
-			AddTypes(noneOfTypes, types);
+			AddTypes(noneOfTypes, componentTypeIds);
 			return this;
 		}
 
-		public List<Type> GetTypes()
+		public List<int> GetTypes()
 		{
 			return allTypes;
 		}
 
-		private void AddTypes(List<Type> target, List<Type> types)
+		private void AddTypes(List<int> target, List<int> types)
 		{
 			if (types != null)
 			{
@@ -111,7 +110,7 @@ namespace Ju.ECS
 			}
 		}
 
-		private void AddType(Type type)
+		private void AddType(int type)
 		{
 			if (!allTypes.Contains(type))
 			{

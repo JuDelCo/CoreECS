@@ -9,13 +9,15 @@ namespace Ju.ECS
 		public event EntityComponentReplacedEvent OnComponentReplaced = delegate { };
 		public event EntityComponentChangedEvent OnComponentRemoved = delegate { };
 
-		private Dictionary<Type, IComponent> components;
+		private HashSet<int> componentTypes;
+		private List<IComponent> components;
 		private uint uuid;
 		private static uint uuidGenerator = 0;
 
 		public Entity()
 		{
-			components = new Dictionary<Type, IComponent>(10);
+			componentTypes = new HashSet<int>();
+			components = new List<IComponent>(100);
 			uuid = uuidGenerator++;
 		}
 
@@ -26,14 +28,15 @@ namespace Ju.ECS
 
 		public IEntity AddComponent(IComponent component)
 		{
-			var type = component.GetType();
+			var componentTypeId = component.GetTypeId();
 
-			if (HasComponent(type))
+			if (HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity already has a component of type {0}", type));
+				throw new Exception(string.Format("Entity already has a component of type {0}", component.GetType()));
 			}
 
-			components.Add(type, component);
+			componentTypes.Add(componentTypeId);
+			SetComponent(componentTypeId, component);
 
 			OnComponentAdded(this, component);
 
@@ -42,16 +45,15 @@ namespace Ju.ECS
 
 		public IEntity ReplaceComponent(IComponent component)
 		{
-			var type = component.GetType();
+			var componentTypeId = component.GetTypeId();
 
-			if (HasComponent(type))
+			if (HasComponent(componentTypeId))
 			{
-				var previousComponent = GetComponent(type);
+				var previousComponent = GetComponent(componentTypeId);
 
 				if (previousComponent != component)
 				{
-					components.Remove(type);
-					components.Add(type, component);
+					SetComponent(componentTypeId, component);
 				}
 
 				OnComponentReplaced(this, previousComponent, component);
@@ -64,49 +66,51 @@ namespace Ju.ECS
 			return this;
 		}
 
-		public IEntity RemoveComponent(Type type)
+		public IEntity RemoveComponent(int componentTypeId)
 		{
-			if (!HasComponent(type))
+			if (!HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity does not have a component of type {0}", type));
+				throw new Exception(string.Format("Entity does not have a component of typeId {0}", componentTypeId));
 			}
 
-			var previousComponent = GetComponent(type);
+			var previousComponent = GetComponent(componentTypeId);
 
-			components.Remove(type);
+			componentTypes.Remove(componentTypeId);
+			components.RemoveAt(componentTypeId);
 
 			OnComponentRemoved(this, previousComponent);
 
 			return this;
 		}
 
-		public bool HasComponent(Type type)
+		public bool HasComponent(int componentTypeId)
 		{
-			return components.ContainsKey(type);
+			return (components.Count > componentTypeId && components[componentTypeId] != null);
 		}
 
-		public IComponent GetComponent(Type type)
+		public IComponent GetComponent(int componentTypeId)
 		{
-			if (!HasComponent(type))
+			if (!HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity does not have a component of type {0}", type));
+				throw new Exception(string.Format("Entity does not have a component of typeId {0}", componentTypeId));
 			}
 
-			return components[type];
+			return components[componentTypeId];
 		}
 
 		public int GetTotalComponents()
 		{
-			return components.Count;
+			return componentTypes.Count;
 		}
 
 		public void RemoveAllComponents()
 		{
-			foreach (var kvp in components)
+			foreach (var component in components)
 			{
-				OnComponentRemoved(this, kvp.Value);
+				OnComponentRemoved(this, component);
 			}
 
+			componentTypes.Clear();
 			components.Clear();
 		}
 
@@ -128,6 +132,19 @@ namespace Ju.ECS
 		public override int GetHashCode()
 		{
 			return (int)GetUuid();
+		}
+
+		private void SetComponent(int componentTypeId, IComponent component)
+		{
+			if(componentTypeId > (components.Count - 1))
+			{
+				for (int i = components.Count - 1; i < componentTypeId; ++i)
+				{
+					components.Add(null);
+				}
+			}
+
+			components[componentTypeId] = component;
 		}
 	}
 }

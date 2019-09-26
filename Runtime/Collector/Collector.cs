@@ -4,12 +4,14 @@ namespace Ju.ECS
 {
 	public class Collector : ICollector
 	{
+		private HashSet<IEntity> collectedEntitiesHashSet;
 		private List<IEntity> collectedEntities;
 		private IGroup group;
 		private GroupEvent groupEvent;
 
 		private Collector()
 		{
+			collectedEntitiesHashSet = new HashSet<IEntity>(new EntityEqualityComparer());
 			collectedEntities = new List<IEntity>(1000);
 		}
 
@@ -57,7 +59,7 @@ namespace Ju.ECS
 
 		public int GetCount()
 		{
-			return collectedEntities.Count;
+			return collectedEntitiesHashSet.Count;
 		}
 
 		public List<IEntity> GetCollectedEntities()
@@ -67,13 +69,15 @@ namespace Ju.ECS
 
 		public void ClearCollectedEntities()
 		{
+			collectedEntitiesHashSet.Clear();
 			collectedEntities.Clear();
 		}
 
 		private void OnEntityGroupEvent(IGroup group, IEntity entity, IComponent component)
 		{
-			if (!collectedEntities.Contains(entity))
+			if (!collectedEntitiesHashSet.Contains(entity))
 			{
+				collectedEntitiesHashSet.Add(entity);
 				collectedEntities.Add(entity);
 			}
 		}

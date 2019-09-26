@@ -35,32 +35,42 @@ namespace Ju.ECS
 
 		public static IEntity RemoveComponent<T>(this IEntity entity) where T : IComponent
 		{
-			return entity.RemoveComponent(typeof(T));
+			return entity.RemoveComponent(ComponentTypeId<T>.Value);
 		}
 
 		public static IEntity Remove<T>(this IEntity entity) where T : IComponent
 		{
-			return entity.RemoveComponent(typeof(T));
+			return entity.RemoveComponent(ComponentTypeId<T>.Value);
 		}
 
 		public static bool HasComponent<T>(this IEntity entity) where T : IComponent
 		{
-			return entity.HasComponent(typeof(T));
+			return entity.HasComponent(ComponentTypeId<T>.Value);
 		}
 
 		public static bool Has<T>(this IEntity entity) where T : IComponent
 		{
-			return entity.HasComponent(typeof(T));
+			return entity.HasComponent(ComponentTypeId<T>.Value);
+		}
+
+		public static bool Has(this IEntity entity, int componentTypeId)
+		{
+			return entity.HasComponent(componentTypeId);
 		}
 
 		public static T GetComponent<T>(this IEntity entity) where T : IComponent
 		{
-			return (T)entity.GetComponent(typeof(T));
+			return (T)entity.GetComponent(ComponentTypeId<T>.Value);
 		}
 
 		public static T Get<T>(this IEntity entity) where T : IComponent
 		{
-			return (T)entity.GetComponent(typeof(T));
+			return (T)entity.GetComponent(ComponentTypeId<T>.Value);
+		}
+
+		public static T Get<T>(this IEntity entity, int componentTypeId) where T : IComponent
+		{
+			return (T)entity.GetComponent(componentTypeId);
 		}
 	}
 }

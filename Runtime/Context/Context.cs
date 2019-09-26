@@ -9,8 +9,9 @@ namespace Ju.ECS
 		public event ContextEntityEvent OnEntityDestroyed = delegate { };
 		public event ContextGroupEvent OnGroupCreated = delegate { };
 
+		private HashSet<IEntity> entitiesHashSet;
 		private List<IEntity> entities;
-		private Dictionary<Type, List<IGroup>> groupsForType;
+		private Dictionary<int, List<IGroup>> groupsForType;
 		private Dictionary<IMatcher, IGroup> groupCache;
 
 		public Context() : this(100000)
@@ -19,8 +20,9 @@ namespace Ju.ECS
 
 		public Context(int capacity)
 		{
+			entitiesHashSet = new HashSet<IEntity>(new EntityEqualityComparer());
 			entities = new List<IEntity>(capacity);
-			groupsForType = new Dictionary<Type, List<IGroup>>(100);
+			groupsForType = new Dictionary<int, List<IGroup>>(100);
 			groupCache = new Dictionary<IMatcher, IGroup>();
 		}
 
@@ -29,6 +31,7 @@ namespace Ju.ECS
 			// TODO: Cache (Reuse destroyed entities)
 			var entity = new Entity();
 
+			entitiesHashSet.Add(entity);
 			entities.Add(entity);
 
 			entity.OnComponentAdded += OnEntityComponentAddedOrRemoved;
@@ -42,22 +45,25 @@ namespace Ju.ECS
 
 		public bool HasEntity(IEntity entity)
 		{
-			return entities.Contains(entity);
+			return entitiesHashSet.Contains(entity);
 		}
 
 		public void DestroyEntity(IEntity entity)
 		{
-			if (!entities.Remove(entity))
+			if (!entitiesHashSet.Remove(entity))
 			{
 				throw new Exception("Context does not contain the entity");
 			}
+
+			entities.Remove(entity);
 
 			// TODO: Handle this in Entity class
 			entity.OnComponentAdded -= OnEntityComponentAddedOrRemoved;
 			entity.OnComponentReplaced -= OnEntityComponentReplaced;
 			entity.OnComponentRemoved -= OnEntityComponentAddedOrRemoved;
 
-			OnEntityDestroyed(this, entity);
+			// TODO: Re-enable
+			//OnEntityDestroyed(this, entity);
 		}
 
 		public void DestroyAllEntities()
@@ -67,6 +73,7 @@ namespace Ju.ECS
 				DestroyEntity(entities[i]);
 			}
 
+			entitiesHashSet.Clear();
 			entities.Clear();
 		}
 
@@ -94,14 +101,14 @@ namespace Ju.ECS
 				group.HandleEntitySilently(entities[i]);
 			}
 
-			foreach (var type in matcher.GetTypes())
+			foreach (var componentTypeId in matcher.GetTypes())
 			{
-				if (!groupsForType.ContainsKey(type))
+				if (!groupsForType.ContainsKey(componentTypeId))
 				{
-					groupsForType.Add(type, new List<IGroup>());
+					groupsForType.Add(componentTypeId, new List<IGroup>());
 				}
 
-				groupsForType[type].Add(group);
+				groupsForType[componentTypeId].Add(group);
 			}
 
 			OnGroupCreated(this, group);
@@ -116,11 +123,11 @@ namespace Ju.ECS
 
 		private void OnEntityComponentAddedOrRemoved(IEntity entity, IComponent component)
 		{
-			var type = component.GetType();
+			var componentTypeId = component.GetTypeId();
 
-			if (groupsForType.ContainsKey(type))
+			if (groupsForType.ContainsKey(componentTypeId))
 			{
-				var groups = groupsForType[type];
+				var groups = groupsForType[componentTypeId];
 
 				// TODO: Cache (MemoryPool)
 				var groupEvents = new List<GroupChangedEvent>(groups.Count);
@@ -142,11 +149,11 @@ namespace Ju.ECS
 
 		private void OnEntityComponentReplaced(IEntity entity, IComponent previousComponent, IComponent newComponent)
 		{
-			var type = newComponent.GetType();
+			var componentTypeId = newComponent.GetTypeId();
 
-			if (groupsForType.ContainsKey(type))
+			if (groupsForType.ContainsKey(componentTypeId))
 			{
-				var groups = groupsForType[type];
+				var groups = groupsForType[componentTypeId];
 
 				for (int i = 0; i < groups.Count; ++i)
 				{

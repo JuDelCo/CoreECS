@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Ju.ECS
@@ -6,9 +5,9 @@ namespace Ju.ECS
 	public interface IMatcher
 	{
 		bool Matches(IEntity entity);
-		IMatcher AllOf(List<Type> types);
-		IMatcher AnyOf(List<Type> types);
-		IMatcher NoneOf(List<Type> types);
-		List<Type> GetTypes();
+		IMatcher AllOf(List<int> componentTypeIds);
+		IMatcher AnyOf(List<int> componentTypeIds);
+		IMatcher NoneOf(List<int> componentTypeIds);
+		List<int> GetTypes();
 	}
 }

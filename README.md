@@ -3,7 +3,7 @@ Core ECS
 
 Core ECS is a deterministic lightweight ECS framework.
 
-It is heavily inspired in Entitas, but with few differences:
+It is heavily inspired in Entitas, but with some differences:
 
 - Is deterministic (does not use hashtables)
 - No code generator (no reflection !)

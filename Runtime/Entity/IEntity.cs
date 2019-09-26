@@ -1,4 +1,3 @@
-using System;
 
 namespace Ju.ECS
 {
@@ -15,9 +14,9 @@ namespace Ju.ECS
 
 		IEntity AddComponent(IComponent component);
 		IEntity ReplaceComponent(IComponent component);
-		IEntity RemoveComponent(Type type);
-		bool HasComponent(Type type);
-		IComponent GetComponent(Type type);
+		IEntity RemoveComponent(int componentTypeId);
+		bool HasComponent(int componentTypeId);
+		IComponent GetComponent(int componentTypeId);
 
 		int GetTotalComponents();
 		void RemoveAllComponents();

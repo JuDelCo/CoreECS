@@ -10,22 +10,24 @@ namespace Ju.ECS
 		public event GroupChangedEvent OnEntityRemoved = delegate { };
 
 		private IMatcher matcher;
+		private HashSet<IEntity> entitiesHashSet;
 		private List<IEntity> entities;
 
 		public Group(IMatcher matcher)
 		{
+			entitiesHashSet = new HashSet<IEntity>(new EntityEqualityComparer());
 			entities = new List<IEntity>();
 			this.matcher = matcher;
 		}
 
 		public int GetCount()
 		{
-			return entities.Count;
+			return entitiesHashSet.Count;
 		}
 
 		public bool ContainsEntity(IEntity entity)
 		{
-			return entities.Contains(entity);
+			return entitiesHashSet.Contains(entity);
 		}
 
 		public List<IEntity> GetEntities()
@@ -52,15 +54,17 @@ namespace Ju.ECS
 		{
 			if (matcher.Matches(entity))
 			{
-				if (!entities.Contains(entity))
+				if (!entitiesHashSet.Contains(entity))
 				{
+					entitiesHashSet.Add(entity);
 					entities.Add(entity);
 				}
 			}
 			else
 			{
-				if (entities.Contains(entity))
+				if (entitiesHashSet.Contains(entity))
 				{
+					entitiesHashSet.Remove(entity);
 					entities.Remove(entity);
 				}
 			}
@@ -72,16 +76,18 @@ namespace Ju.ECS
 
 			if (matcher.Matches(entity))
 			{
-				if (!entities.Contains(entity))
+				if (!entitiesHashSet.Contains(entity))
 				{
+					entitiesHashSet.Add(entity);
 					entities.Add(entity);
 					groupEvent = OnEntityAdded;
 				}
 			}
 			else
 			{
-				if (entities.Contains(entity))
+				if (entitiesHashSet.Contains(entity))
 				{
+					entitiesHashSet.Remove(entity);
 					entities.Remove(entity);
 					groupEvent = OnEntityRemoved;
 				}
@@ -92,7 +98,7 @@ namespace Ju.ECS
 
 		public void UpdateEntity(IEntity entity, IComponent previousComponent, IComponent newComponent)
 		{
-			if (entities.Contains(entity))
+			if (entitiesHashSet.Contains(entity))
 			{
 				OnEntityRemoved(this, entity, previousComponent);
 				OnEntityAdded(this, entity, newComponent);
