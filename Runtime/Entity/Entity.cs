@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Ju.ECS
@@ -9,93 +8,52 @@ namespace Ju.ECS
 		public event EntityComponentReplacedEvent OnComponentReplaced = delegate { };
 		public event EntityComponentChangedEvent OnComponentRemoved = delegate { };
 
-		private HashSet<int> componentTypes;
-		private List<IComponent> components;
+		private List<int> componentTypes;
+		private int[] componentPoolIndices;
 		private uint uuid;
 		private static uint uuidGenerator = 0;
 
-		public Entity()
+		public Entity(int componentTypeCount)
 		{
-			componentTypes = new HashSet<int>();
-			components = new List<IComponent>(100);
 			uuid = uuidGenerator++;
-		}
+			componentTypes = new List<int>();
+			componentPoolIndices = new int[componentTypeCount];
 
-		public T CreateComponent<T>() where T : IComponent, new()
-		{
-			return new T();
-		}
-
-		public IEntity AddComponent(IComponent component)
-		{
-			var componentTypeId = component.GetTypeId();
-
-			if (HasComponent(componentTypeId))
+			for (int i = 0; i < componentTypeCount; ++i)
 			{
-				throw new Exception(string.Format("Entity already has a component of type {0}", component.GetType()));
+				componentPoolIndices[i] = -1;
 			}
+		}
 
+		public void AddComponent(int componentTypeId, int componentPoolIndex)
+		{
 			componentTypes.Add(componentTypeId);
-			SetComponent(componentTypeId, component);
+			componentPoolIndices[componentTypeId] = componentPoolIndex;
 
-			OnComponentAdded(this, component);
-
-			return this;
+			OnComponentAdded(this, componentTypeId);
 		}
 
-		public IEntity ReplaceComponent(IComponent component)
+		public void ReplaceComponent(int componentTypeId)
 		{
-			var componentTypeId = component.GetTypeId();
-
-			if (HasComponent(componentTypeId))
-			{
-				var previousComponent = GetComponent(componentTypeId);
-
-				if (previousComponent != component)
-				{
-					SetComponent(componentTypeId, component);
-				}
-
-				OnComponentReplaced(this, previousComponent, component);
-			}
-			else
-			{
-				AddComponent(component);
-			}
-
-			return this;
+			OnComponentReplaced(this, componentTypeId);
 		}
 
-		public IEntity RemoveComponent(int componentTypeId)
+		public void RemoveComponent(int componentTypeId)
 		{
-			if (!HasComponent(componentTypeId))
-			{
-				throw new Exception(string.Format("Entity does not have a component of typeId {0}", componentTypeId));
-			}
-
-			var previousComponent = GetComponent(componentTypeId);
-
 			componentTypes.Remove(componentTypeId);
-			components.RemoveAt(componentTypeId);
+			componentPoolIndices[componentTypeId] = -1;
 
-			OnComponentRemoved(this, previousComponent);
-
-			return this;
+			OnComponentRemoved(this, componentTypeId);
 		}
 
 		public bool HasComponent(int componentTypeId)
 		{
-			return (components.Count > componentTypeId && components[componentTypeId] != null);
+			return componentPoolIndices[componentTypeId] >= 0;
 		}
 
-		public IComponent GetComponent(int componentTypeId)
+		public int GetComponentPoolIndex(int componentTypeId)
 		{
-			if (!HasComponent(componentTypeId))
-			{
-				throw new Exception(string.Format("Entity does not have a component of typeId {0}", componentTypeId));
-			}
-
-			return components[componentTypeId];
+			return componentPoolIndices[componentTypeId];
 		}
 
 		public int GetTotalComponents()
@@ -105,13 +63,10 @@ namespace Ju.ECS
 
 		public void RemoveAllComponents()
 		{
-			foreach (var component in components)
+			for (int i = (componentTypes.Count - 1); i >= 0; --i)
 			{
-				OnComponentRemoved(this, component);
+				RemoveComponent(componentTypes[i]);
 			}
-
-			componentTypes.Clear();
-			components.Clear();
 		}
 
 		public uint GetUuid()
@@ -132,19 +87,6 @@ namespace Ju.ECS
 		public override int GetHashCode()
 		{
 			return (int)GetUuid();
-		}
-
-		private void SetComponent(int componentTypeId, IComponent component)
-		{
-			if(componentTypeId > (components.Count - 1))
-			{
-				for (int i = components.Count - 1; i < componentTypeId; ++i)
-				{
-					components.Add(null);
-				}
-			}
-
-			components[componentTypeId] = component;
 		}
 	}
 }

@@ -4,14 +4,14 @@ namespace Ju.ECS
 {
 	public class Collector : ICollector
 	{
-		private HashSet<IEntity> collectedEntitiesHashSet;
+		private HashSet<uint> collectedEntitiesHashSet;
 		private List<IEntity> collectedEntities;
 		private IGroup group;
 		private GroupEvent groupEvent;
 
 		private Collector()
 		{
-			collectedEntitiesHashSet = new HashSet<IEntity>(new EntityEqualityComparer());
+			collectedEntitiesHashSet = new HashSet<uint>();
 			collectedEntities = new List<IEntity>(1000);
 		}
 
@@ -73,11 +73,11 @@ namespace Ju.ECS
 			collectedEntities.Clear();
 		}
 
-		private void OnEntityGroupEvent(IGroup group, IEntity entity, IComponent component)
+		private void OnEntityGroupEvent(IGroup group, IEntity entity)
 		{
-			if (!collectedEntitiesHashSet.Contains(entity))
+			if (!collectedEntitiesHashSet.Contains(entity.GetUuid()))
 			{
-				collectedEntitiesHashSet.Add(entity);
+				collectedEntitiesHashSet.Add(entity.GetUuid());
 				collectedEntities.Add(entity);
 			}
 		}

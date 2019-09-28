@@ -10,12 +10,12 @@ namespace Ju.ECS
 		public event GroupChangedEvent OnEntityRemoved = delegate { };
 
 		private IMatcher matcher;
-		private HashSet<IEntity> entitiesHashSet;
+		private HashSet<uint> entitiesHashSet;
 		private List<IEntity> entities;
 
 		public Group(IMatcher matcher)
 		{
-			entitiesHashSet = new HashSet<IEntity>(new EntityEqualityComparer());
+			entitiesHashSet = new HashSet<uint>();
 			entities = new List<IEntity>();
 			this.matcher = matcher;
 		}
@@ -23,11 +23,6 @@ namespace Ju.ECS
 		public int GetCount()
 		{
 			return entitiesHashSet.Count;
-		}
-
-		public bool ContainsEntity(IEntity entity)
-		{
-			return entitiesHashSet.Contains(entity);
 		}
 
 		public List<IEntity> GetEntities()
@@ -54,17 +49,17 @@ namespace Ju.ECS
 		{
 			if (matcher.Matches(entity))
 			{
-				if (!entitiesHashSet.Contains(entity))
+				if (!entitiesHashSet.Contains(entity.GetUuid()))
 				{
-					entitiesHashSet.Add(entity);
+					entitiesHashSet.Add(entity.GetUuid());
 					entities.Add(entity);
 				}
 			}
 			else
 			{
-				if (entitiesHashSet.Contains(entity))
+				if (entitiesHashSet.Contains(entity.GetUuid()))
 				{
-					entitiesHashSet.Remove(entity);
+					entitiesHashSet.Remove(entity.GetUuid());
 					entities.Remove(entity);
 				}
 			}
@@ -76,18 +71,18 @@ namespace Ju.ECS
 
 			if (matcher.Matches(entity))
 			{
-				if (!entitiesHashSet.Contains(entity))
+				if (!entitiesHashSet.Contains(entity.GetUuid()))
 				{
-					entitiesHashSet.Add(entity);
+					entitiesHashSet.Add(entity.GetUuid());
 					entities.Add(entity);
 					groupEvent = OnEntityAdded;
 				}
 			}
 			else
 			{
-				if (entitiesHashSet.Contains(entity))
+				if (entitiesHashSet.Contains(entity.GetUuid()))
 				{
-					entitiesHashSet.Remove(entity);
+					entitiesHashSet.Remove(entity.GetUuid());
 					entities.Remove(entity);
 					groupEvent = OnEntityRemoved;
 				}
@@ -96,13 +91,14 @@ namespace Ju.ECS
 			return groupEvent;
 		}
 
-		public void UpdateEntity(IEntity entity, IComponent previousComponent, IComponent newComponent)
+		public void UpdateEntity(IEntity entity)
 		{
-			if (entitiesHashSet.Contains(entity))
+			if (entitiesHashSet.Contains(entity.GetUuid()))
 			{
-				OnEntityRemoved(this, entity, previousComponent);
-				OnEntityAdded(this, entity, newComponent);
-				OnEntityUpdated(this, entity, previousComponent, newComponent);
+				// TODO: !!!
+				//OnEntityRemoved(this, entity);
+				OnEntityAdded(this, entity);
+				//OnEntityUpdated(this, entity);
 			}
 		}
 	}

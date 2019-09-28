@@ -41,11 +41,13 @@ namespace Ju.ECS
 		{
 			if (collector.GetCount() != 0)
 			{
-				foreach (var e in collector.GetCollectedEntities())
+				var collectedEntities = collector.GetCollectedEntities();
+
+				for (int i = (collectedEntities.Count - 1); i >= 0; --i)
 				{
-					if (Filter(e))
+					if (Filter(collectedEntities[i]))
 					{
-						entities.Add(e);
+						entities.Add(collectedEntities[i]);
 					}
 				}
 

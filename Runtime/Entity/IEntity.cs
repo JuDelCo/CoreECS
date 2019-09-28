@@ -1,8 +1,8 @@
 
 namespace Ju.ECS
 {
-	public delegate void EntityComponentChangedEvent(IEntity entity, IComponent component);
-	public delegate void EntityComponentReplacedEvent(IEntity entity, IComponent previousComponent, IComponent newComponent);
+	public delegate void EntityComponentChangedEvent(IEntity entity, int componentTypeId);
+	public delegate void EntityComponentReplacedEvent(IEntity entity, int componentTypeId);
 
 	public interface IEntity
 	{
@@ -10,13 +10,11 @@ namespace Ju.ECS
 		event EntityComponentReplacedEvent OnComponentReplaced;
 		event EntityComponentChangedEvent OnComponentRemoved;
 
-		T CreateComponent<T>() where T : IComponent, new();
-
-		IEntity AddComponent(IComponent component);
-		IEntity ReplaceComponent(IComponent component);
-		IEntity RemoveComponent(int componentTypeId);
+		void AddComponent(int componentTypeId, int componentPoolIndex);
+		void ReplaceComponent(int componentTypeId);
+		void RemoveComponent(int componentTypeId);
 		bool HasComponent(int componentTypeId);
-		IComponent GetComponent(int componentTypeId);
+		int GetComponentPoolIndex(int componentTypeId);
 
 		int GetTotalComponents();
 		void RemoveAllComponents();

@@ -9,18 +9,18 @@ namespace Ju.ECS
 		public event ContextEntityEvent OnEntityDestroyed = delegate { };
 		public event ContextGroupEvent OnGroupCreated = delegate { };
 
-		private HashSet<IEntity> entitiesHashSet;
+		private int componentTypeCount;
 		private List<IEntity> entities;
 		private Dictionary<int, List<IGroup>> groupsForType;
 		private Dictionary<IMatcher, IGroup> groupCache;
 
-		public Context() : this(100000)
+		public Context(int componentTypeCount) : this(componentTypeCount, 100000)
 		{
+			this.componentTypeCount = componentTypeCount;
 		}
 
-		public Context(int capacity)
+		public Context(int componentTypeCount, int capacity)
 		{
-			entitiesHashSet = new HashSet<IEntity>(new EntityEqualityComparer());
 			entities = new List<IEntity>(capacity);
 			groupsForType = new Dictionary<int, List<IGroup>>(100);
 			groupCache = new Dictionary<IMatcher, IGroup>();
@@ -29,9 +29,7 @@ namespace Ju.ECS
 		public IEntity CreateEntity()
 		{
 			// TODO: Cache (Reuse destroyed entities)
-			var entity = new Entity();
-
-			entitiesHashSet.Add(entity);
+			var entity = new Entity(componentTypeCount);
 			entities.Add(entity);
 
 			entity.OnComponentAdded += OnEntityComponentAddedOrRemoved;
@@ -43,38 +41,28 @@ namespace Ju.ECS
 			return entity;
 		}
 
-		public bool HasEntity(IEntity entity)
-		{
-			return entitiesHashSet.Contains(entity);
-		}
-
 		public void DestroyEntity(IEntity entity)
 		{
-			if (!entitiesHashSet.Remove(entity))
+			if (!entities.Remove(entity))
 			{
 				throw new Exception("Context does not contain the entity");
 			}
 
-			entities.Remove(entity);
-
-			// TODO: Handle this in Entity class
+			// TODO: Handle this block in Entity class
+			entity.RemoveAllComponents();
 			entity.OnComponentAdded -= OnEntityComponentAddedOrRemoved;
 			entity.OnComponentReplaced -= OnEntityComponentReplaced;
 			entity.OnComponentRemoved -= OnEntityComponentAddedOrRemoved;
 
-			// TODO: Re-enable
-			//OnEntityDestroyed(this, entity);
+			OnEntityDestroyed(this, entity);
 		}
 
 		public void DestroyAllEntities()
 		{
-			for (int i = entities.Count; i > 0; --i)
+			for (int i = (entities.Count - 1); i >= 0; --i)
 			{
 				DestroyEntity(entities[i]);
 			}
-
-			entitiesHashSet.Clear();
-			entities.Clear();
 		}
 
 		public List<IEntity> GetEntities()
@@ -101,14 +89,16 @@ namespace Ju.ECS
 				group.HandleEntitySilently(entities[i]);
 			}
 
-			foreach (var componentTypeId in matcher.GetTypes())
+			var types = matcher.GetTypes();
+
+			for (int i = (types.Count - 1); i >= 0; --i)
 			{
-				if (!groupsForType.ContainsKey(componentTypeId))
+				if (!groupsForType.ContainsKey(types[i]))
 				{
-					groupsForType.Add(componentTypeId, new List<IGroup>());
+					groupsForType.Add(types[i], new List<IGroup>());
 				}
 
-				groupsForType[componentTypeId].Add(group);
+				groupsForType[types[i]].Add(group);
 			}
 
 			OnGroupCreated(this, group);
@@ -121,16 +111,15 @@ namespace Ju.ECS
 			return entities.Count;
 		}
 
-		private void OnEntityComponentAddedOrRemoved(IEntity entity, IComponent component)
+		private void OnEntityComponentAddedOrRemoved(IEntity entity, int componentTypeId)
 		{
-			var componentTypeId = component.GetTypeId();
-
 			if (groupsForType.ContainsKey(componentTypeId))
 			{
 				var groups = groupsForType[componentTypeId];
 
 				// TODO: Cache (MemoryPool)
 				var groupEvents = new List<GroupChangedEvent>(groups.Count);
+				//groupEvents.Clear();
 
 				for (int i = 0; i < groups.Count; ++i)
 				{
@@ -141,23 +130,21 @@ namespace Ju.ECS
 				{
 					if (groupEvents[i] != null)
 					{
-						groupEvents[i](groups[i], entity, component);
+						groupEvents[i](groups[i], entity);
 					}
 				}
 			}
 		}
 
-		private void OnEntityComponentReplaced(IEntity entity, IComponent previousComponent, IComponent newComponent)
+		private void OnEntityComponentReplaced(IEntity entity, int componentTypeId)
 		{
-			var componentTypeId = newComponent.GetTypeId();
-
 			if (groupsForType.ContainsKey(componentTypeId))
 			{
 				var groups = groupsForType[componentTypeId];
 
 				for (int i = 0; i < groups.Count; ++i)
 				{
-					groups[i].UpdateEntity(entity, previousComponent, newComponent);
+					groups[i].UpdateEntity(entity);
 				}
 			}
 		}

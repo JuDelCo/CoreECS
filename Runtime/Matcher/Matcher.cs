@@ -32,9 +32,9 @@ namespace Ju.ECS
 		{
 			bool result = true;
 
-			foreach (var type in allOfTypes)
+			for (int i = (allOfTypes.Count - 1); i >= 0; --i)
 			{
-				if (!entity.HasComponent(type))
+				if (!entity.HasComponent(allOfTypes[i]))
 				{
 					result = false;
 					break;
@@ -45,9 +45,9 @@ namespace Ju.ECS
 			{
 				var found = false;
 
-				foreach (var type in anyOfTypes)
+				for (int i = (anyOfTypes.Count - 1); i >= 0; --i)
 				{
-					if (entity.HasComponent(type))
+					if (entity.HasComponent(anyOfTypes[i]))
 					{
 						found = true;
 						break;
@@ -60,9 +60,9 @@ namespace Ju.ECS
 				}
 			}
 
-			foreach (var type in noneOfTypes)
+			for (int i = (noneOfTypes.Count - 1); i >= 0; --i)
 			{
-				if (entity.HasComponent(type))
+				if (entity.HasComponent(noneOfTypes[i]))
 				{
 					result = false;
 					break;
@@ -134,9 +134,9 @@ namespace Ju.ECS
 			{
 				unchecked
 				{
-					foreach (var type in allTypes)
+					for (int i = (allTypes.Count - 1); i >= 0; --i)
 					{
-						cachedHash += type.GetType().Name.GetDeterministicHashCode();
+						cachedHash += allTypes[i].GetType().Name.GetDeterministicHashCode();
 					}
 				}
 

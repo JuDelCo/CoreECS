@@ -13,7 +13,6 @@ namespace Ju.ECS
 
 		IEntity CreateEntity();
 
-		bool HasEntity(IEntity entity);
 		void DestroyEntity(IEntity entity);
 		void DestroyAllEntities();
 
