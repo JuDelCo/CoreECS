@@ -28,7 +28,7 @@ Documentation
 
 #### Overview
 
-NOTE: All components should be structs for best performance and memory efficiency.
+Note: All components should be structs for best performance and memory efficiency.
 
 Basic data architecture diagram:
 
@@ -91,7 +91,7 @@ var healthData = entity.Get<Health>();
 context.CreateEntity()
 	.Add(new Speed(2f))
 	.Add(new Position(3, 7))
-	.Replace(new Health(10)) // Replace will add the component if doesn't have one yet
+	.Replace(new Health(10)) // Replace will add the component if doesn't have it yet
 	.Remove<Speed>();
 ```
 
@@ -196,9 +196,9 @@ public class RenderPositionSystem : ReactiveSystem
 	{
 		foreach (var e in entities)
 		{
-            var position = e.Get<Position>();
-            e.Get<View>().gameObject.transform.position = new Vector3(position.x, position.y, position.z);
-        }
+			var position = e.Get<Position>();
+			e.Get<View>().gameObject.transform.position = new Vector3(position.x, position.y, position.z);
+		}
 	}
 }
 ```
