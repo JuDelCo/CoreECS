@@ -14,13 +14,14 @@ namespace Ju.ECS
 		private List<int> componentTypes;
 		private int[] componentPoolIndices;
 		private uint uuid;
-		private static uint uuidGenerator = 0;
+		private uint entityId;
 		private int retainCount = 0;
 
-		public Entity(int componentTypeCount)
+		public Entity(int componentTypeCount, uint entityId)
 		{
-			isEnabled = true;
-			uuid = uuidGenerator++;
+			uuid = entityId;
+			Reactivate(entityId);
+
 			componentTypes = new List<int>(componentTypeCount);
 			componentPoolIndices = new int[componentTypeCount];
 
@@ -88,6 +89,11 @@ namespace Ju.ECS
 			return uuid;
 		}
 
+		public uint GetEntityId()
+		{
+			return entityId;
+		}
+
 		public bool IsEnabled()
 		{
 			return isEnabled;
@@ -120,10 +126,9 @@ namespace Ju.ECS
 			}
 		}
 
-		public void Reactivate()
+		public void Reactivate(uint entityId)
 		{
-			// TODO: Check
-			//uuid = uuidGenerator++;
+			this.entityId = entityId;
 			isEnabled = true;
 		}
 

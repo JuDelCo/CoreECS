@@ -6,15 +6,15 @@ namespace Ju.ECS
 	{
 		public static IEntity Add<T>(this IEntity entity, T component) where T : IComponent
 		{
-			var componentTypeId = ComponentType<T>.Id;
+			var componentTypeId = ComponentLookup<T>.Id;
 
 			if (entity.HasComponent(componentTypeId))
 			{
 				throw new Exception(string.Format("Entity already has a component of type {0}", typeof(T).Name));
 			}
 
-			var componentPoolIndex = ComponentType<T>.New();
-			ComponentType<T>.componentPool[componentPoolIndex] = component;
+			var componentPoolIndex = ComponentLookup<T>.New();
+			ComponentLookup<T>.Array[componentPoolIndex] = component;
 			entity.AddComponent(componentTypeId, componentPoolIndex);
 
 			return entity;
@@ -22,12 +22,12 @@ namespace Ju.ECS
 
 		public static IEntity Replace<T>(this IEntity entity, T component) where T : IComponent
 		{
-			var componentTypeId = ComponentType<T>.Id;
+			var componentTypeId = ComponentLookup<T>.Id;
 
 			if (entity.HasComponent(componentTypeId))
 			{
 				var componentPoolIndex = entity.GetComponentPoolIndex(componentTypeId);
-				ComponentType<T>.componentPool[componentPoolIndex] = component;
+				ComponentLookup<T>.Array[componentPoolIndex] = component;
 				entity.ReplaceComponent(componentTypeId);
 			}
 			else
@@ -40,7 +40,7 @@ namespace Ju.ECS
 
 		public static IEntity Remove<T>(this IEntity entity) where T : IComponent
 		{
-			var componentTypeId = ComponentType<T>.Id;
+			var componentTypeId = ComponentLookup<T>.Id;
 
 			if (!entity.HasComponent(componentTypeId))
 			{
@@ -48,15 +48,15 @@ namespace Ju.ECS
 			}
 
 			var componentPoolIndex = entity.GetComponentPoolIndex(componentTypeId);
-			ComponentType<T>.Remove(componentPoolIndex);
-			entity.RemoveComponent(ComponentType<T>.Id);
+			ComponentLookup<T>.Remove(componentPoolIndex);
+			entity.RemoveComponent(componentTypeId);
 
 			return entity;
 		}
 
 		public static bool Has<T>(this IEntity entity) where T : IComponent
 		{
-			return entity.HasComponent(ComponentType<T>.Id);
+			return entity.HasComponent(ComponentLookup<T>.Id);
 		}
 
 		public static bool Has(this IEntity entity, int componentTypeId)
@@ -66,14 +66,14 @@ namespace Ju.ECS
 
 		public static T Get<T>(this IEntity entity) where T : IComponent
 		{
-			var componentTypeId = ComponentType<T>.Id;
+			var componentTypeId = ComponentLookup<T>.Id;
 
 			if (!entity.HasComponent(componentTypeId))
 			{
 				throw new Exception(string.Format("Entity does not have a component of type {0}", typeof(T).Name));
 			}
 
-			return ComponentType<T>.componentPool[entity.GetComponentPoolIndex(componentTypeId)];
+			return ComponentLookup<T>.Array[entity.GetComponentPoolIndex(componentTypeId)];
 		}
 	}
 }

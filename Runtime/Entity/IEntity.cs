@@ -23,12 +23,13 @@ namespace Ju.ECS
 		void RemoveAllComponents();
 
 		uint GetUuid();
+		uint GetEntityId();
 		bool IsEnabled();
 		void Destroy();
 		void Retain();
 		void Release();
 
-		void Reactivate();
+		void Reactivate(uint entityId);
 		int GetRetainCount();
 		void InternalDestroy();
 	}

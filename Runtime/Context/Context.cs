@@ -21,6 +21,8 @@ namespace Ju.ECS
 		private EntityComponentReplacedEvent onEntityComponentReplacedCache;
 		private EntityEvent onEntityReleaseCache;
 		private EntityEvent onEntityDestroyCache;
+		private uint uuidGenerator = 0;
+		private uint entityIdCounter = 0;
 
 		public Context(int componentTypeCount) : this(componentTypeCount, 100000)
 		{
@@ -48,11 +50,11 @@ namespace Ju.ECS
 			if (reausableEntities.Count > 0)
 			{
 				entity = reausableEntities.Pop();
-				entity.Reactivate();
+				entity.Reactivate(entityIdCounter++);
 			}
 			else
 			{
-				entity = new Entity(componentTypeCount);
+				entity = new Entity(componentTypeCount, uuidGenerator++);
 			}
 
 			entity.Retain();

@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 
 namespace Ju.ECS
 {
 	public class Collector : ICollector
 	{
-		private HashSet<uint> collectedEntitiesHashSet;
+		private bool[] collectedEntitiesCheck;
 		private List<IEntity> collectedEntities;
 		private IGroup group;
 		private GroupEvent groupEvent;
@@ -12,7 +13,7 @@ namespace Ju.ECS
 
 		private Collector()
 		{
-			collectedEntitiesHashSet = new HashSet<uint>();
+			collectedEntitiesCheck = new bool[0];
 			collectedEntities = new List<IEntity>(1000);
 			onEntityGroupEventCache = OnEntityGroupEvent;
 		}
@@ -57,7 +58,7 @@ namespace Ju.ECS
 
 		public int GetCount()
 		{
-			return collectedEntitiesHashSet.Count;
+			return collectedEntities.Count;
 		}
 
 		public List<IEntity> GetCollectedEntities()
@@ -67,17 +68,36 @@ namespace Ju.ECS
 
 		public void ClearCollectedEntities()
 		{
-			collectedEntitiesHashSet.Clear();
+			for (int i = (collectedEntities.Count - 1); i >= 0; --i)
+			{
+				collectedEntitiesCheck[collectedEntities[i].GetUuid()] = false;
+			}
+
 			collectedEntities.Clear();
 		}
 
 		private void OnEntityGroupEvent(IGroup group, IEntity entity)
 		{
-			if (!collectedEntitiesHashSet.Contains(entity.GetUuid()))
+			if (entity.GetUuid() >= collectedEntitiesCheck.Length)
 			{
-				collectedEntitiesHashSet.Add(entity.GetUuid());
+				IncreaseCheckArray((int)entity.GetUuid());
+			}
+
+			if (!collectedEntitiesCheck[entity.GetUuid()])
+			{
+				collectedEntitiesCheck[entity.GetUuid()] = true;
 				collectedEntities.Add(entity);
 			}
+		}
+
+		private void IncreaseCheckArray(int target)
+		{
+			int inc = 10000;
+			target = (target / inc) * inc + ((target % inc) > (inc / 2) ? (inc * 2) : inc);
+
+			var newCollectedEntitiesCheck = new bool[target];
+			Array.Copy(collectedEntitiesCheck, newCollectedEntitiesCheck, collectedEntitiesCheck.Length);
+			collectedEntitiesCheck = newCollectedEntitiesCheck;
 		}
 	}
 }

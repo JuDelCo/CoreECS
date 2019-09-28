@@ -3,11 +3,12 @@ using System.Collections.Generic;
 
 namespace Ju.ECS
 {
-	public static class ComponentType<T> where T : IComponent
+	public static class ComponentLookup<T> where T : IComponent
 	{
 		public static readonly int Id = ComponentType.GetId(typeof(T));
+		public static T[] Array => componentArray;
 
-		public static T[] componentPool = new T[0];
+		private static T[] componentArray = new T[0];
 		private static Stack<int> unusedIndices = new Stack<int>(10000);
 
 		public static int New()
@@ -27,12 +28,12 @@ namespace Ju.ECS
 
 		private static void IncreasePool(int amount)
 		{
-			var oldLength = componentPool.Length;
-			var newComponentPool = new T[oldLength + amount];
-			Array.Copy(componentPool, newComponentPool, oldLength);
-			componentPool = newComponentPool;
+			var oldLength = componentArray.Length;
+			var newComponentArray = new T[oldLength + amount];
+			System.Array.Copy(componentArray, newComponentArray, oldLength);
+			componentArray = newComponentArray;
 
-			for (int i = (newComponentPool.Length - 1); i >= oldLength; --i)
+			for (int i = (componentArray.Length - 1); i >= oldLength; --i)
 			{
 				unusedIndices.Push(i);
 			}

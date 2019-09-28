@@ -5,23 +5,23 @@ namespace Ju.ECS
 {
 	public class Group : IGroup
 	{
-		public event GroupChangedEvent OnEntityAdded = delegate { };
-		public event GroupChangedEvent OnEntityRemoved = delegate { };
+		public event GroupChangedEvent OnEntityAdded;
+		public event GroupChangedEvent OnEntityRemoved;
 
 		private IMatcher matcher;
-		private HashSet<uint> entitiesHashSet;
+		private bool[] entitiesCheck;
 		private List<IEntity> entities;
 
 		public Group(IMatcher matcher)
 		{
-			entitiesHashSet = new HashSet<uint>();
+			entitiesCheck = new bool[0];
 			entities = new List<IEntity>();
 			this.matcher = matcher;
 		}
 
 		public int GetCount()
 		{
-			return entitiesHashSet.Count;
+			return entities.Count;
 		}
 
 		public List<IEntity> GetEntities()
@@ -46,19 +46,24 @@ namespace Ju.ECS
 
 		public void HandleEntitySilently(IEntity entity)
 		{
+			if (entity.GetUuid() >= entitiesCheck.Length)
+			{
+				IncreaseCheckArray((int)entity.GetUuid());
+			}
+
 			if (matcher.Matches(entity))
 			{
-				if (!entitiesHashSet.Contains(entity.GetUuid()))
+				if (!entitiesCheck[entity.GetUuid()])
 				{
-					entitiesHashSet.Add(entity.GetUuid());
+					entitiesCheck[entity.GetUuid()] = true;
 					entities.Add(entity);
 				}
 			}
 			else
 			{
-				if (entitiesHashSet.Contains(entity.GetUuid()))
+				if (entitiesCheck[entity.GetUuid()])
 				{
-					entitiesHashSet.Remove(entity.GetUuid());
+					entitiesCheck[entity.GetUuid()] = false;
 					entities.Remove(entity);
 				}
 			}
@@ -68,20 +73,25 @@ namespace Ju.ECS
 		{
 			GroupChangedEvent groupEvent = null;
 
+			if (entity.GetUuid() >= entitiesCheck.Length)
+			{
+				IncreaseCheckArray((int)entity.GetUuid());
+			}
+
 			if (matcher.Matches(entity))
 			{
-				if (!entitiesHashSet.Contains(entity.GetUuid()))
+				if (!entitiesCheck[entity.GetUuid()])
 				{
-					entitiesHashSet.Add(entity.GetUuid());
+					entitiesCheck[entity.GetUuid()] = true;
 					entities.Add(entity);
 					groupEvent = OnEntityAdded;
 				}
 			}
 			else
 			{
-				if (entitiesHashSet.Contains(entity.GetUuid()))
+				if (entitiesCheck[entity.GetUuid()])
 				{
-					entitiesHashSet.Remove(entity.GetUuid());
+					entitiesCheck[entity.GetUuid()] = false;
 					entities.Remove(entity);
 					groupEvent = OnEntityRemoved;
 				}
@@ -92,11 +102,33 @@ namespace Ju.ECS
 
 		public void UpdateEntity(IEntity entity)
 		{
-			if (entitiesHashSet.Contains(entity.GetUuid()))
+			if (entity.GetUuid() >= entitiesCheck.Length)
 			{
-				OnEntityRemoved(this, entity);
-				OnEntityAdded(this, entity);
+				IncreaseCheckArray((int)entity.GetUuid());
 			}
+
+			if (entitiesCheck[entity.GetUuid()])
+			{
+				if (OnEntityRemoved != null)
+				{
+					OnEntityRemoved(this, entity);
+				}
+
+				if (OnEntityAdded != null)
+				{
+					OnEntityAdded(this, entity);
+				}
+			}
+		}
+
+		private void IncreaseCheckArray(int target)
+		{
+			int inc = 10000;
+			target = (target / inc) * inc + ((target % inc) > (inc / 2) ? (inc * 2) : inc);
+
+			var newEntitiesCheck = new bool[target];
+			Array.Copy(entitiesCheck, newEntitiesCheck, entitiesCheck.Length);
+			entitiesCheck = newEntitiesCheck;
 		}
 	}
 }
