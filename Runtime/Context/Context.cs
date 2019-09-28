@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Ju.ECS.Util;
 
 namespace Ju.ECS
 {
