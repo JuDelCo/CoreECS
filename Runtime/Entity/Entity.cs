@@ -4,19 +4,24 @@ namespace Ju.ECS
 {
 	public class Entity : IEntity
 	{
-		public event EntityComponentChangedEvent OnComponentAdded = delegate { };
-		public event EntityComponentReplacedEvent OnComponentReplaced = delegate { };
-		public event EntityComponentChangedEvent OnComponentRemoved = delegate { };
+		public event EntityComponentChangedEvent OnComponentAdded;
+		public event EntityComponentReplacedEvent OnComponentReplaced;
+		public event EntityComponentChangedEvent OnComponentRemoved;
+		public event EntityEvent OnRelease;
+		public event EntityEvent OnDestroy;
 
+		private bool isEnabled;
 		private List<int> componentTypes;
 		private int[] componentPoolIndices;
 		private uint uuid;
 		private static uint uuidGenerator = 0;
+		private int retainCount = 0;
 
 		public Entity(int componentTypeCount)
 		{
+			isEnabled = true;
 			uuid = uuidGenerator++;
-			componentTypes = new List<int>();
+			componentTypes = new List<int>(componentTypeCount);
 			componentPoolIndices = new int[componentTypeCount];
 
 			for (int i = 0; i < componentTypeCount; ++i)
@@ -30,12 +35,18 @@ namespace Ju.ECS
 			componentTypes.Add(componentTypeId);
 			componentPoolIndices[componentTypeId] = componentPoolIndex;
 
-			OnComponentAdded(this, componentTypeId);
+			if (OnComponentAdded != null)
+			{
+				OnComponentAdded(this, componentTypeId);
+			}
 		}
 
 		public void ReplaceComponent(int componentTypeId)
 		{
-			OnComponentReplaced(this, componentTypeId);
+			if (OnComponentReplaced != null)
+			{
+				OnComponentReplaced(this, componentTypeId);
+			}
 		}
 
 		public void RemoveComponent(int componentTypeId)
@@ -43,7 +54,10 @@ namespace Ju.ECS
 			componentTypes.Remove(componentTypeId);
 			componentPoolIndices[componentTypeId] = -1;
 
-			OnComponentRemoved(this, componentTypeId);
+			if (OnComponentRemoved != null)
+			{
+				OnComponentRemoved(this, componentTypeId);
+			}
 		}
 
 		public bool HasComponent(int componentTypeId)
@@ -72,6 +86,62 @@ namespace Ju.ECS
 		public uint GetUuid()
 		{
 			return uuid;
+		}
+
+		public bool IsEnabled()
+		{
+			return isEnabled;
+		}
+
+		public void Destroy()
+		{
+			if (OnDestroy != null)
+			{
+				OnDestroy(this);
+			}
+		}
+
+		public void Retain()
+		{
+			retainCount++;
+		}
+
+		public void Release()
+		{
+			retainCount--;
+
+			if (retainCount == 0)
+			{
+				if (OnRelease != null)
+				{
+					OnRelease(this);
+					OnRelease = null;
+				}
+			}
+		}
+
+		public void Reactivate()
+		{
+			// TODO: Check
+			//uuid = uuidGenerator++;
+			isEnabled = true;
+		}
+
+		public int GetRetainCount()
+		{
+			return retainCount;
+		}
+
+		public void InternalDestroy()
+		{
+			isEnabled = false;
+
+			RemoveAllComponents();
+
+			OnComponentAdded = null;
+			OnComponentReplaced = null;
+			OnComponentRemoved = null;
+			OnDestroy = null;
 		}
 
 		public override bool Equals(object obj)

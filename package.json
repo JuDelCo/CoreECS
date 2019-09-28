@@ -2,7 +2,7 @@
   "name": "com.judelco.core.ecs",
   "displayName": "JuDelCo Core ECS",
   "description": "Deterministic lightweight ECS framework",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "unity": "2018.3",
   "type": "library",
   "license": "MIT",

@@ -6,7 +6,6 @@ namespace Ju.ECS
 	public class Group : IGroup
 	{
 		public event GroupChangedEvent OnEntityAdded = delegate { };
-		public event GroupUpdatedEvent OnEntityUpdated = delegate { };
 		public event GroupChangedEvent OnEntityRemoved = delegate { };
 
 		private IMatcher matcher;
@@ -95,10 +94,8 @@ namespace Ju.ECS
 		{
 			if (entitiesHashSet.Contains(entity.GetUuid()))
 			{
-				// TODO: !!!
-				//OnEntityRemoved(this, entity);
+				OnEntityRemoved(this, entity);
 				OnEntityAdded(this, entity);
-				//OnEntityUpdated(this, entity);
 			}
 		}
 	}

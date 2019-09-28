@@ -20,22 +20,6 @@ namespace Ju.ECS
 			return entity;
 		}
 
-		public static IEntity Add<T>(this IEntity entity) where T : IComponent, new()
-		{
-			var componentTypeId = ComponentType<T>.Id;
-
-			if (entity.HasComponent(componentTypeId))
-			{
-				throw new Exception(string.Format("Entity already has a component of type {0}", typeof(T).Name));
-			}
-
-			var componentPoolIndex = ComponentType<T>.New();
-			ComponentType<T>.componentPool[componentPoolIndex] = new T();
-			entity.AddComponent(componentTypeId, componentPoolIndex);
-
-			return entity;
-		}
-
 		public static IEntity Replace<T>(this IEntity entity, T component) where T : IComponent
 		{
 			var componentTypeId = ComponentType<T>.Id;

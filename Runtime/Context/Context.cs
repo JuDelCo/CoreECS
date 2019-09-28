@@ -1,18 +1,26 @@
 using System;
 using System.Collections.Generic;
+using Ju.ECS.Util;
 
 namespace Ju.ECS
 {
 	public class Context : IContext
 	{
-		public event ContextEntityEvent OnEntityCreated = delegate { };
-		public event ContextEntityEvent OnEntityDestroyed = delegate { };
-		public event ContextGroupEvent OnGroupCreated = delegate { };
+		public event ContextEntityEvent OnEntityCreated;
+		public event ContextEntityEvent OnEntityDestroyed;
+		public event ContextGroupEvent OnGroupCreated;
 
 		private int componentTypeCount;
 		private List<IEntity> entities;
+		private Stack<IEntity> reausableEntities;
+		private List<IEntity> retainedEntities;
 		private Dictionary<int, List<IGroup>> groupsForType;
 		private Dictionary<IMatcher, IGroup> groupCache;
+		private ObjectPool<List<GroupChangedEvent>> eventCache;
+		private EntityComponentChangedEvent onEntityComponentAddedOrRemovedCache;
+		private EntityComponentReplacedEvent onEntityComponentReplacedCache;
+		private EntityEvent onEntityReleaseCache;
+		private EntityEvent onEntityDestroyCache;
 
 		public Context(int componentTypeCount) : this(componentTypeCount, 100000)
 		{
@@ -22,47 +30,46 @@ namespace Ju.ECS
 		public Context(int componentTypeCount, int capacity)
 		{
 			entities = new List<IEntity>(capacity);
+			reausableEntities = new Stack<IEntity>(capacity);
+			retainedEntities = new List<IEntity>(capacity);
 			groupsForType = new Dictionary<int, List<IGroup>>(100);
-			groupCache = new Dictionary<IMatcher, IGroup>();
+			groupCache = new Dictionary<IMatcher, IGroup>(100);
+			eventCache = new ObjectPool<List<GroupChangedEvent>>();
+			onEntityComponentAddedOrRemovedCache = OnEntityComponentAddedOrRemoved;
+			onEntityComponentReplacedCache = OnEntityComponentReplaced;
+			onEntityReleaseCache = OnEntityRelease;
+			onEntityDestroyCache = OnEntityDestroy;
 		}
 
 		public IEntity CreateEntity()
 		{
-			// TODO: Cache (Reuse destroyed entities)
-			var entity = new Entity(componentTypeCount);
+			IEntity entity;
+
+			if (reausableEntities.Count > 0)
+			{
+				entity = reausableEntities.Pop();
+				entity.Reactivate();
+			}
+			else
+			{
+				entity = new Entity(componentTypeCount);
+			}
+
+			entity.Retain();
 			entities.Add(entity);
 
-			entity.OnComponentAdded += OnEntityComponentAddedOrRemoved;
-			entity.OnComponentReplaced += OnEntityComponentReplaced;
-			entity.OnComponentRemoved += OnEntityComponentAddedOrRemoved;
+			entity.OnComponentAdded += onEntityComponentAddedOrRemovedCache;
+			entity.OnComponentReplaced += onEntityComponentReplacedCache;
+			entity.OnComponentRemoved += onEntityComponentAddedOrRemovedCache;
+			entity.OnRelease += onEntityReleaseCache;
+			entity.OnDestroy += onEntityDestroyCache;
 
-			OnEntityCreated(this, entity);
+			if (OnEntityCreated != null)
+			{
+				OnEntityCreated(this, entity);
+			}
 
 			return entity;
-		}
-
-		public void DestroyEntity(IEntity entity)
-		{
-			if (!entities.Remove(entity))
-			{
-				throw new Exception("Context does not contain the entity");
-			}
-
-			// TODO: Handle this block in Entity class
-			entity.RemoveAllComponents();
-			entity.OnComponentAdded -= OnEntityComponentAddedOrRemoved;
-			entity.OnComponentReplaced -= OnEntityComponentReplaced;
-			entity.OnComponentRemoved -= OnEntityComponentAddedOrRemoved;
-
-			OnEntityDestroyed(this, entity);
-		}
-
-		public void DestroyAllEntities()
-		{
-			for (int i = (entities.Count - 1); i >= 0; --i)
-			{
-				DestroyEntity(entities[i]);
-			}
 		}
 
 		public List<IEntity> GetEntities()
@@ -101,7 +108,10 @@ namespace Ju.ECS
 				groupsForType[types[i]].Add(group);
 			}
 
-			OnGroupCreated(this, group);
+			if (OnGroupCreated != null)
+			{
+				OnGroupCreated(this, group);
+			}
 
 			return group;
 		}
@@ -111,15 +121,23 @@ namespace Ju.ECS
 			return entities.Count;
 		}
 
+		public void DestroyAllEntities()
+		{
+			for (int i = (entities.Count - 1); i >= 0; --i)
+			{
+				entities[i].Destroy();
+			}
+
+			entities.Clear();
+		}
+
 		private void OnEntityComponentAddedOrRemoved(IEntity entity, int componentTypeId)
 		{
 			if (groupsForType.ContainsKey(componentTypeId))
 			{
 				var groups = groupsForType[componentTypeId];
 
-				// TODO: Cache (MemoryPool)
-				var groupEvents = new List<GroupChangedEvent>(groups.Count);
-				//groupEvents.Clear();
+				var groupEvents = eventCache.Get();
 
 				for (int i = 0; i < groups.Count; ++i)
 				{
@@ -133,6 +151,9 @@ namespace Ju.ECS
 						groupEvents[i](groups[i], entity);
 					}
 				}
+
+				groupEvents.Clear();
+				eventCache.Push(groupEvents);
 			}
 		}
 
@@ -146,6 +167,39 @@ namespace Ju.ECS
 				{
 					groups[i].UpdateEntity(entity);
 				}
+			}
+		}
+
+		private void OnEntityRelease(IEntity entity)
+		{
+			retainedEntities.Remove(entity);
+			reausableEntities.Push(entity);
+		}
+
+		private void OnEntityDestroy(IEntity entity)
+		{
+			if (!entities.Remove(entity))
+			{
+				throw new Exception("Context does not contain the entity");
+			}
+
+			entity.InternalDestroy();
+
+			if (OnEntityDestroyed != null)
+			{
+				OnEntityDestroyed(this, entity);
+			}
+
+			if (entity.GetRetainCount() == 1)
+			{
+				entity.OnRelease -= onEntityReleaseCache;
+				entity.Release();
+				reausableEntities.Push(entity);
+			}
+			else
+			{
+				retainedEntities.Add(entity);
+				entity.Release();
 			}
 		}
 	}

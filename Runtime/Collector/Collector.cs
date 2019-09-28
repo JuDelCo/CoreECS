@@ -8,11 +8,13 @@ namespace Ju.ECS
 		private List<IEntity> collectedEntities;
 		private IGroup group;
 		private GroupEvent groupEvent;
+		private GroupChangedEvent onEntityGroupEventCache;
 
 		private Collector()
 		{
 			collectedEntitiesHashSet = new HashSet<uint>();
 			collectedEntities = new List<IEntity>(1000);
+			onEntityGroupEventCache = OnEntityGroupEvent;
 		}
 
 		public Collector(IGroup group, GroupEvent groupEvent) : this()
@@ -33,26 +35,22 @@ namespace Ju.ECS
 			switch (groupEvent)
 			{
 				case GroupEvent.Added:
-					group.OnEntityAdded -= OnEntityGroupEvent;
-					group.OnEntityAdded += OnEntityGroupEvent;
+					group.OnEntityAdded += onEntityGroupEventCache;
 					break;
 				case GroupEvent.Removed:
-					group.OnEntityRemoved -= OnEntityGroupEvent;
-					group.OnEntityRemoved += OnEntityGroupEvent;
+					group.OnEntityRemoved += onEntityGroupEventCache;
 					break;
 				case GroupEvent.AddedOrRemoved:
-					group.OnEntityAdded -= OnEntityGroupEvent;
-					group.OnEntityAdded += OnEntityGroupEvent;
-					group.OnEntityRemoved -= OnEntityGroupEvent;
-					group.OnEntityRemoved += OnEntityGroupEvent;
+					group.OnEntityAdded += onEntityGroupEventCache;
+					group.OnEntityRemoved += onEntityGroupEventCache;
 					break;
 			}
 		}
 
 		public void Deactivate()
 		{
-			group.OnEntityAdded -= OnEntityGroupEvent;
-			group.OnEntityRemoved -= OnEntityGroupEvent;
+			group.OnEntityAdded -= onEntityGroupEventCache;
+			group.OnEntityRemoved -= onEntityGroupEventCache;
 
 			ClearCollectedEntities();
 		}

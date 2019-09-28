@@ -8,7 +8,6 @@ namespace Ju.ECS
 	public interface IGroup
 	{
 		event GroupChangedEvent OnEntityAdded;
-		event GroupUpdatedEvent OnEntityUpdated;
 		event GroupChangedEvent OnEntityRemoved;
 
 		int GetCount();

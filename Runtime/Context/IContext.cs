@@ -12,12 +12,9 @@ namespace Ju.ECS
 		event ContextGroupEvent OnGroupCreated;
 
 		IEntity CreateEntity();
-
-		void DestroyEntity(IEntity entity);
-		void DestroyAllEntities();
-
 		List<IEntity> GetEntities();
 		IGroup GetGroup(IMatcher matcher);
 		int GetEntityCount();
+		void DestroyAllEntities();
 	}
 }
