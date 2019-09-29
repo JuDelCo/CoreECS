@@ -1,8 +1,6 @@
 {
-    "name": "JuDelCo.Core.ECS",
-    "references": [
-        "GUID:bfddafe0e7ebb5642be155cd152928db"
-    ],
+    "name": "JuDelCo.Core.ECS.Runtime",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
