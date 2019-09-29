@@ -48,6 +48,7 @@ namespace Ju.ECS
 					if (Filter(collectedEntities[i]))
 					{
 						entities.Add(collectedEntities[i]);
+						collectedEntities[i].Retain();
 					}
 				}
 
@@ -61,6 +62,11 @@ namespace Ju.ECS
 					}
 					finally
 					{
+						for (int i = (entities.Count - 1); i >= 0; --i)
+						{
+							entities[i].Release();
+						}
+
 						entities.Clear();
 					}
 				}

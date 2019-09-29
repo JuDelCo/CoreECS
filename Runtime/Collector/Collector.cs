@@ -71,6 +71,7 @@ namespace Ju.ECS
 			for (int i = (collectedEntities.Count - 1); i >= 0; --i)
 			{
 				collectedEntitiesCheck[collectedEntities[i].GetUuid()] = false;
+				collectedEntities[i].Release();
 			}
 
 			collectedEntities.Clear();
@@ -87,6 +88,7 @@ namespace Ju.ECS
 			{
 				collectedEntitiesCheck[entity.GetUuid()] = true;
 				collectedEntities.Add(entity);
+				entity.Retain();
 			}
 		}
 

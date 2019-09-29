@@ -57,6 +57,7 @@ namespace Ju.ECS
 				{
 					entitiesCheck[entity.GetUuid()] = true;
 					entities.Add(entity);
+					entity.Retain();
 				}
 			}
 			else
@@ -65,6 +66,7 @@ namespace Ju.ECS
 				{
 					entitiesCheck[entity.GetUuid()] = false;
 					entities.Remove(entity);
+					entity.Release();
 				}
 			}
 		}
@@ -84,6 +86,7 @@ namespace Ju.ECS
 				{
 					entitiesCheck[entity.GetUuid()] = true;
 					entities.Add(entity);
+					entity.Retain();
 					groupEvent = OnEntityAdded;
 				}
 			}
@@ -93,6 +96,7 @@ namespace Ju.ECS
 				{
 					entitiesCheck[entity.GetUuid()] = false;
 					entities.Remove(entity);
+					entity.Release();
 					groupEvent = OnEntityRemoved;
 				}
 			}

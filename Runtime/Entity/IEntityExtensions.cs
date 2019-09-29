@@ -15,7 +15,7 @@ namespace Ju.ECS
 
 			var componentPoolIndex = ComponentLookup<T>.New();
 			ComponentLookup<T>.Array[componentPoolIndex] = component;
-			entity.AddComponent(componentTypeId, componentPoolIndex);
+			entity.AddComponent(componentTypeId, componentPoolIndex, ComponentLookup<T>.UnusedIndices);
 
 			return entity;
 		}
@@ -47,8 +47,6 @@ namespace Ju.ECS
 				throw new Exception(string.Format("Entity does not have a component of type {0}", typeof(T).Name));
 			}
 
-			var componentPoolIndex = entity.GetComponentPoolIndex(componentTypeId);
-			ComponentLookup<T>.Remove(componentPoolIndex);
 			entity.RemoveComponent(componentTypeId);
 
 			return entity;

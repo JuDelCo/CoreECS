@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 
 namespace Ju.ECS
 {
@@ -13,7 +14,7 @@ namespace Ju.ECS
 		event EntityEvent OnRelease;
 		event EntityEvent OnDestroy;
 
-		void AddComponent(int componentTypeId, int componentPoolIndex);
+		void AddComponent(int componentTypeId, int componentPoolIndex, Stack<int> unusedIndicesRef);
 		void ReplaceComponent(int componentTypeId);
 		void RemoveComponent(int componentTypeId);
 		bool HasComponent(int componentTypeId);

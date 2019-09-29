@@ -13,6 +13,7 @@ namespace Ju.ECS
 		private bool isEnabled;
 		private List<int> componentTypes;
 		private int[] componentPoolIndices;
+		private Stack<int>[] componentUnusedIndices;
 		private uint uuid;
 		private uint entityId;
 		private int retainCount = 0;
@@ -24,6 +25,7 @@ namespace Ju.ECS
 
 			componentTypes = new List<int>(componentTypeCount);
 			componentPoolIndices = new int[componentTypeCount];
+			componentUnusedIndices = new Stack<int>[componentTypeCount];
 
 			for (int i = 0; i < componentTypeCount; ++i)
 			{
@@ -31,10 +33,11 @@ namespace Ju.ECS
 			}
 		}
 
-		public void AddComponent(int componentTypeId, int componentPoolIndex)
+		public void AddComponent(int componentTypeId, int componentPoolIndex, Stack<int> unusedIndicesRef)
 		{
 			componentTypes.Add(componentTypeId);
 			componentPoolIndices[componentTypeId] = componentPoolIndex;
+			componentUnusedIndices[componentTypeId] = unusedIndicesRef;
 
 			if (OnComponentAdded != null)
 			{
@@ -53,6 +56,9 @@ namespace Ju.ECS
 		public void RemoveComponent(int componentTypeId)
 		{
 			componentTypes.Remove(componentTypeId);
+
+			componentUnusedIndices[componentTypeId].Push(componentPoolIndices[componentTypeId]);
+			componentUnusedIndices[componentTypeId] = null;
 			componentPoolIndices[componentTypeId] = -1;
 
 			if (OnComponentRemoved != null)

@@ -135,7 +135,7 @@ namespace Ju.ECS
 				{
 					for (int i = (allTypes.Count - 1); i >= 0; --i)
 					{
-						cachedHash += allTypes[i].GetType().Name.GetDeterministicHashCode();
+						cachedHash += GetDeterministicHashCode(allTypes[i].GetType().Name);
 					}
 				}
 
@@ -143,6 +143,29 @@ namespace Ju.ECS
 			}
 
 			return cachedHash;
+		}
+
+		private int GetDeterministicHashCode(string typeName)
+		{
+			unchecked
+			{
+				int hash1 = (5381 << 16) + 5381;
+				int hash2 = hash1;
+
+				for (int i = 0; i < typeName.Length; i += 2)
+				{
+					hash1 = ((hash1 << 5) + hash1) ^ typeName[i];
+
+					if (i == typeName.Length - 1)
+					{
+						break;
+					}
+
+					hash2 = ((hash2 << 5) + hash2) ^ typeName[i + 1];
+				}
+
+				return hash1 + (hash2 * 1566083941);
+			}
 		}
 	}
 }

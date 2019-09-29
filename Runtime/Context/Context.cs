@@ -15,7 +15,7 @@ namespace Ju.ECS
 		private List<IEntity> retainedEntities;
 		private Dictionary<int, List<IGroup>> groupsForType;
 		private Dictionary<IMatcher, IGroup> groupCache;
-		private ObjectPool<List<GroupChangedEvent>> eventCache;
+		private Stack<List<GroupChangedEvent>> eventCache;
 		private EntityComponentChangedEvent onEntityComponentAddedOrRemovedCache;
 		private EntityComponentReplacedEvent onEntityComponentReplacedCache;
 		private EntityEvent onEntityReleaseCache;
@@ -35,7 +35,7 @@ namespace Ju.ECS
 			retainedEntities = new List<IEntity>(capacity);
 			groupsForType = new Dictionary<int, List<IGroup>>(100);
 			groupCache = new Dictionary<IMatcher, IGroup>(100);
-			eventCache = new ObjectPool<List<GroupChangedEvent>>();
+			eventCache = new Stack<List<GroupChangedEvent>>();
 			onEntityComponentAddedOrRemovedCache = OnEntityComponentAddedOrRemoved;
 			onEntityComponentReplacedCache = OnEntityComponentReplaced;
 			onEntityReleaseCache = OnEntityRelease;
@@ -138,7 +138,16 @@ namespace Ju.ECS
 			{
 				var groups = groupsForType[componentTypeId];
 
-				var groupEvents = eventCache.Get();
+				List<GroupChangedEvent> groupEvents;
+
+				if (eventCache.Count != 0)
+				{
+					groupEvents = eventCache.Pop();
+				}
+				else
+				{
+					groupEvents = new List<GroupChangedEvent>(100);
+				}
 
 				for (int i = 0; i < groups.Count; ++i)
 				{
@@ -194,14 +203,14 @@ namespace Ju.ECS
 			if (entity.GetRetainCount() == 1)
 			{
 				entity.OnRelease -= onEntityReleaseCache;
-				entity.Release();
 				reausableEntities.Push(entity);
 			}
 			else
 			{
 				retainedEntities.Add(entity);
-				entity.Release();
 			}
+
+			entity.Release();
 		}
 	}
 }

@@ -7,6 +7,7 @@ namespace Ju.ECS
 	{
 		public static readonly int Id = ComponentType.GetId(typeof(T));
 		public static T[] Array => componentArray;
+		public static Stack<int> UnusedIndices => unusedIndices;
 
 		private static T[] componentArray = new T[0];
 		private static Stack<int> unusedIndices = new Stack<int>(10000);
