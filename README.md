@@ -20,6 +20,7 @@ See also
 =====================
 
 - [Core](https://github.com/JuDelCo/Core) - Core package base
+- [Core Math](https://github.com/JuDelCo/CoreMath) - Simple linear algebra math library
 - [Core Unity](https://github.com/JuDelCo/CoreUnity) - Core services extension for Unity3D
 
 
