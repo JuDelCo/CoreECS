@@ -90,28 +90,28 @@ namespace Ju.ECS
 			{
 				group = new Group(matcher);
 				groupCache.Add(matcher, group);
-			}
 
-			for (int i = 0; i < entities.Count; ++i)
-			{
-				group.HandleEntitySilently(entities[i]);
-			}
-
-			var types = matcher.GetTypes();
-
-			for (int i = (types.Count - 1); i >= 0; --i)
-			{
-				if (!groupsForType.ContainsKey(types[i]))
+				for (int i = 0; i < entities.Count; ++i)
 				{
-					groupsForType.Add(types[i], new List<IGroup>());
+					group.HandleEntitySilently(entities[i]);
 				}
 
-				groupsForType[types[i]].Add(group);
-			}
+				var types = matcher.GetTypes();
 
-			if (OnGroupCreated != null)
-			{
-				OnGroupCreated(this, group);
+				for (int i = (types.Count - 1); i >= 0; --i)
+				{
+					if (!groupsForType.ContainsKey(types[i]))
+					{
+						groupsForType.Add(types[i], new List<IGroup>());
+					}
+
+					groupsForType[types[i]].Add(group);
+				}
+
+				if (OnGroupCreated != null)
+				{
+					OnGroupCreated(this, group);
+				}
 			}
 
 			return group;
