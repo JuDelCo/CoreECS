@@ -31,12 +31,18 @@ namespace Ju.ECS
 
 		public IEntity GetSingleEntity()
 		{
-			if (entities.Count != 1)
+			IEntity entity = null;
+
+			if (entities.Count > 1)
 			{
-				throw new Exception(string.Format("The group does not have a single entity (count: {0})", entities.Count));
+				throw new Exception(string.Format("The group doesn't have a single entity (count: {0})", entities.Count));
+			}
+			else if (entities.Count == 1)
+			{
+				entity = entities[0];
 			}
 
-			return entities[0];
+			return entity;
 		}
 
 		public IMatcher GetMatcher()

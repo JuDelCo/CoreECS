@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Ju.ECS.Internal;
 
 namespace Ju.ECS
 {
@@ -9,6 +10,9 @@ namespace Ju.ECS
 		public event ContextEntityEvent OnEntityDestroyed;
 		public event ContextGroupEvent OnGroupCreated;
 
+		private static int contextIdGenerator = 0;
+
+		private int contextId;
 		private int componentTypeCount;
 		private List<IEntity> entities;
 		private Stack<IEntity> reausableEntities;
@@ -25,7 +29,9 @@ namespace Ju.ECS
 
 		public Context(int componentTypeCount) : this(componentTypeCount, 100000)
 		{
+			contextId = contextIdGenerator++;
 			this.componentTypeCount = componentTypeCount;
+			ComponentTypeIdsPerContext.SetContext(contextId, componentTypeCount);
 		}
 
 		public Context(int componentTypeCount, int capacity)
@@ -53,7 +59,7 @@ namespace Ju.ECS
 			}
 			else
 			{
-				entity = new Entity(componentTypeCount, uuidGenerator++);
+				entity = new Entity(contextId, componentTypeCount, uuidGenerator++);
 			}
 
 			entity.Retain();
@@ -190,7 +196,7 @@ namespace Ju.ECS
 		{
 			if (!entities.Remove(entity))
 			{
-				throw new Exception("Context does not contain the entity");
+				throw new Exception("Context doesn't contain the entity");
 			}
 
 			entity.InternalDestroy();

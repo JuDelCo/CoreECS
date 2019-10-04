@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Ju.ECS.Internal;
 
 namespace Ju.ECS
 {
@@ -10,6 +11,7 @@ namespace Ju.ECS
 		public event EntityEvent OnRelease;
 		public event EntityEvent OnDestroy;
 
+		private int contextId;
 		private bool isEnabled;
 		private List<int> componentTypes;
 		private int[] componentPoolIndices;
@@ -18,8 +20,10 @@ namespace Ju.ECS
 		private uint entityId;
 		private int retainCount = 0;
 
-		public Entity(int componentTypeCount, uint entityId)
+		public Entity(int contextId, int componentTypeCount, uint entityId)
 		{
+			this.contextId = contextId;
+
 			uuid = entityId;
 			Reactivate(entityId);
 
@@ -35,9 +39,11 @@ namespace Ju.ECS
 
 		public void AddComponent(int componentTypeId, int componentPoolIndex, Stack<int> unusedIndicesRef)
 		{
+			var contextComponentTypeId = GetContextComponentTypeId(componentTypeId);
+
 			componentTypes.Add(componentTypeId);
-			componentPoolIndices[componentTypeId] = componentPoolIndex;
-			componentUnusedIndices[componentTypeId] = unusedIndicesRef;
+			componentPoolIndices[contextComponentTypeId] = componentPoolIndex;
+			componentUnusedIndices[contextComponentTypeId] = unusedIndicesRef;
 
 			if (OnComponentAdded != null)
 			{
@@ -55,11 +61,13 @@ namespace Ju.ECS
 
 		public void RemoveComponent(int componentTypeId)
 		{
+			var contextComponentTypeId = GetContextComponentTypeId(componentTypeId);
+
 			componentTypes.Remove(componentTypeId);
 
-			componentUnusedIndices[componentTypeId].Push(componentPoolIndices[componentTypeId]);
-			componentUnusedIndices[componentTypeId] = null;
-			componentPoolIndices[componentTypeId] = -1;
+			componentUnusedIndices[contextComponentTypeId].Push(componentPoolIndices[contextComponentTypeId]);
+			componentUnusedIndices[contextComponentTypeId] = null;
+			componentPoolIndices[contextComponentTypeId] = -1;
 
 			if (OnComponentRemoved != null)
 			{
@@ -69,12 +77,12 @@ namespace Ju.ECS
 
 		public bool HasComponent(int componentTypeId)
 		{
-			return componentPoolIndices[componentTypeId] >= 0;
+			return componentPoolIndices[GetContextComponentTypeId(componentTypeId)] >= 0;
 		}
 
 		public int GetComponentPoolIndex(int componentTypeId)
 		{
-			return componentPoolIndices[componentTypeId];
+			return componentPoolIndices[GetContextComponentTypeId(componentTypeId)];
 		}
 
 		public int GetTotalComponents()
@@ -168,6 +176,18 @@ namespace Ju.ECS
 		public override int GetHashCode()
 		{
 			return (int)GetUuid();
+		}
+
+		private int GetContextComponentTypeId(int componentTypeId)
+		{
+			var index = ComponentTypeIdsPerContext.GetTypeId(contextId, componentTypeId);
+
+			if (index == -1)
+			{
+				throw new System.Exception("Entity can't handle more component types");
+			}
+
+			return index;
 		}
 	}
 }

@@ -1,4 +1,5 @@
 using System;
+using Ju.ECS.Internal;
 
 namespace Ju.ECS
 {
@@ -44,7 +45,7 @@ namespace Ju.ECS
 
 			if (!entity.HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity does not have a component of type {0}", typeof(T).Name));
+				throw new Exception(string.Format("Entity doesn't have a component of type {0}", typeof(T).Name));
 			}
 
 			entity.RemoveComponent(componentTypeId);
@@ -57,9 +58,25 @@ namespace Ju.ECS
 			return entity.HasComponent(ComponentLookup<T>.Id);
 		}
 
-		public static bool Has(this IEntity entity, int componentTypeId)
+		public static bool Has<T1, T2>(this IEntity entity) where T1 : IComponent where T2 : IComponent
 		{
-			return entity.HasComponent(componentTypeId);
+			return entity.HasComponent(ComponentLookup<T1>.Id) &&
+					entity.HasComponent(ComponentLookup<T2>.Id);
+		}
+
+		public static bool Has<T1, T2, T3>(this IEntity entity) where T1 : IComponent where T2 : IComponent where T3 : IComponent
+		{
+			return entity.HasComponent(ComponentLookup<T1>.Id) &&
+					entity.HasComponent(ComponentLookup<T2>.Id) &&
+					entity.HasComponent(ComponentLookup<T3>.Id);
+		}
+
+		public static bool Has<T1, T2, T3, T4>(this IEntity entity) where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
+		{
+			return entity.HasComponent(ComponentLookup<T1>.Id) &&
+					entity.HasComponent(ComponentLookup<T2>.Id) &&
+					entity.HasComponent(ComponentLookup<T3>.Id) &&
+					entity.HasComponent(ComponentLookup<T4>.Id);
 		}
 
 		public static T Get<T>(this IEntity entity) where T : IComponent
@@ -68,7 +85,7 @@ namespace Ju.ECS
 
 			if (!entity.HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity does not have a component of type {0}", typeof(T).Name));
+				throw new Exception(string.Format("Entity doesn't have a component of type {0}", typeof(T).Name));
 			}
 
 			return ComponentLookup<T>.Array[entity.GetComponentPoolIndex(componentTypeId)];

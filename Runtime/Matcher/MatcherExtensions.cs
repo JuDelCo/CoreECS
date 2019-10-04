@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Ju.ECS.Internal;
 
 namespace Ju.ECS
 {

@@ -27,40 +27,9 @@ See also
 Documentation
 =====================
 
-#### Overview
-
 Note: All components should be structs for best performance and memory efficiency.
 
-Basic data architecture diagram:
-
-```
-+------------------+
-|     Context      |
-|------------------|
-|    e       e     |      +-----------+
-|        e     e---|----> |  Entity   |
-|  e        e      |      |-----------|
-|     e  e       e |      | Component |
-| e            e   |      |           |      +-----------+
-|    e     e       |      | Component-|----> | Component |
-|  e    e     e    |      |           |      |-----------|
-|    e      e    e |      | Component |      |   Data    |
-+------------------+      +-----------+      +-----------+
-  |
-  |
-  |     +-------------+  Groups:
-  |     |      e      |  Subsets of entities in the context
-  |     |   e     e   |  for blazing fast querying
-  +---> |        +------------+
-        |     e  |    |       |
-        |  e     | e  |  e    |
-        +--------|----+    e  |
-                 |     e      |
-                 |  e     e   |
-                 +------------+
-```
-
-#### Define components
+#### Defining components
 
 ```csharp
 public struct Speed : IComponent
@@ -72,13 +41,26 @@ public struct Speed : IComponent
 		this.value = value;
 	}
 }
+```
 
-// In other source file...
+#### Create a Context
+
+```csharp
+// IMPORTANT: You need to pass the count of component types you will use to the context
+const int COMPONENT_TYPES_COUNT = 9;
+
+var context = new Context(Constants.COMPONENT_TYPES_COUNT);
+```
+
+#### Creating entities
+
+```csharp
 var entity = context.CreateEntity();
+
 entity.Add(new Speed(2f));
 ```
 
-#### Component management
+#### Entity management
 
 ```csharp
 entity.Add(new Position(3, 7));
@@ -88,27 +70,21 @@ entity.Remove<Speed>();
 var hasSpeed = entity.Has<Speed>();
 var healthData = entity.Get<Health>();
 
-// You can also chain methods !
+// You can also chain methods!
 context.CreateEntity()
 	.Add(new Speed(2f))
 	.Add(new Position(3, 7))
-	.Replace(new Health(10)) // Replace will add the component if doesn't have it yet
+	.Replace(new Health(10)) // Note: Replace will add the component if doesn't have it yet
 	.Remove<Speed>();
 ```
 
-#### Context creation
+#### Group management
 
 ```csharp
-// IMPORTANT: You need to pass the count of component types you will use to the context
-const int TYPE_COUNT = 25;
+// Returns a group containing always all entities with Position and Speed components.
+var group = context.GetGroup(MatcherGenerator.AllOf<Position, Speed>());
 
-var context = new Context(Constants.TYPE_COUNT);
-
-var entity = context.CreateEntity();
-entity.Add(new Speed());
-
-// Returns all entities having Position and Speed components.
-var entities = context.GetEntities(MatcherGen.AllOf<Position, Speed>());
+var entities = group.GetEntities();
 
 foreach (var e in entities)
 {
@@ -116,44 +92,19 @@ foreach (var e in entities)
 }
 ```
 
-#### Group events
-
-```csharp
-context.GetGroup(MatcherGen.AllOf<Position>()).OnEntityAdded += (group, entity) =>
-{
-	// ...
-};
-
-context.GetGroup(MatcherGen.AllOf<Position>()).OnEntityRemoved += (group, entity) =>
-{
-	// ...
-};
-```
-
-#### Collectors
-
-```csharp
-var group = context.GetGroup(MatcherGen.AllOf<Position>());
-var collector = group.CreateCollector(GroupEvent.Added);
-
-foreach (var e in collector.GetCollectedEntities())
-{
-	// ...
-}
-
-collector.ClearCollectedEntities();
-```
-
 #### Execute systems
 
 ```csharp
+// You can also use IInitializeSystem, ICleanupSystem and ITearDownSystem systems
 public class MovementSystem : IExecuteSystem
 {
 	private IGroup group;
 
 	public MovementSystem(IContext context)
 	{
-		group = context.GetGroup(MatcherGen.AllOf<Position, Speed>());
+		// You can also use a shorthand for AllOf components!
+		// This is equivalent to: GetGroup(MatcherGenerator.AllOf<Position, Speed>())
+		group = context.GetGroup<Position, Speed>();
 	}
 
 	public void Execute()
@@ -185,12 +136,13 @@ public class RenderPositionSystem : ReactiveSystem
 
 	protected override ICollector GetTrigger(IContext context)
 	{
-		return context.GetGroup(MatcherGen.AllOf<Position, View>()).CreateCollector(GroupEvent.Added);
+		return context.GetGroup<Position, View>().CreateCollector(GroupEvent.Added);
 	}
 
 	protected override bool Filter(IEntity entity)
 	{
-		return entity.Has<View>();
+		// Yes, you can use multiple types in Has<T> method !
+		return entity.Has<Position, View>();
 	}
 
 	protected override void Execute(List<IEntity> entities)

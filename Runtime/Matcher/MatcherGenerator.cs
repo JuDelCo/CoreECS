@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Ju.ECS.Internal;
 
 namespace Ju.ECS
 {
-	public static class MatcherGen
+	public static class MatcherGenerator
 	{
 		public static IMatcher AllOf<T>() where T : IComponent
 		{
