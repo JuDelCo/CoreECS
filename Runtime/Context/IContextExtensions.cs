@@ -27,7 +27,7 @@ namespace Ju.ECS
 
 		public static IGroup GetGroup<T1, T2, T3, T4>(this IContext context) where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
 		{
-			return context.GetGroup(MatcherGenerator.AllOf<T1, T2, T3>());
+			return context.GetGroup(MatcherGenerator.AllOf<T1, T2, T3, T4>());
 		}
 
 		public static IEntity Set<T>(this IContext context, T component) where T : IComponent
