@@ -24,6 +24,18 @@ See also
 - [Core Unity](https://github.com/JuDelCo/CoreUnity) - Core services extension for Unity3D
 
 
+Install
+=====================
+
+If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
+
+```
+	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git",
+```
+
+otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
+
+
 Documentation
 =====================
 
@@ -155,18 +167,6 @@ public class RenderPositionSystem : ReactiveSystem
 	}
 }
 ```
-
-
-Install
-=====================
-
-If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
-
-```
-	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git",
-```
-
-otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
 
 
 The MIT License (MIT)
