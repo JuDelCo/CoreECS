@@ -19,8 +19,8 @@ Any feedback is welcome !
 See also
 =====================
 
-- [Core](https://github.com/JuDelCo/Core) - Core package base
-- [Core Math](https://github.com/JuDelCo/CoreMath) - Simple linear algebra math library
+- [Core](https://github.com/JuDelCo/Core) - Core package base (service locator and core services)
+- [Core Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics and IK
 - [Core Unity](https://github.com/JuDelCo/CoreUnity) - Core services extension for Unity3D
 
 
