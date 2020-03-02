@@ -2,7 +2,7 @@
   "name": "com.judelco.core.ecs",
   "displayName": "JuDelCo Core ECS",
   "description": "Deterministic lightweight ECS framework",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "unity": "2018.3",
   "dependencies": {
   },
