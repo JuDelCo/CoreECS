@@ -44,7 +44,7 @@ namespace Ju.ECS
 
 		public void Initialize()
 		{
-			for (int i = 0; i < initializeSystems.Count; ++i)
+			for (int i = 0, count = initializeSystems.Count; i < count; ++i)
 			{
 				initializeSystems[i].Initialize();
 			}
@@ -52,7 +52,7 @@ namespace Ju.ECS
 
 		public void Execute()
 		{
-			for (int i = 0; i < executeSystems.Count; ++i)
+			for (int i = 0, count = executeSystems.Count; i < count; ++i)
 			{
 				executeSystems[i].Execute();
 			}
@@ -60,7 +60,7 @@ namespace Ju.ECS
 
 		public void Cleanup()
 		{
-			for (int i = 0; i < cleanupSystems.Count; ++i)
+			for (int i = 0, count = cleanupSystems.Count; i < count; ++i)
 			{
 				cleanupSystems[i].Cleanup();
 			}
@@ -68,7 +68,7 @@ namespace Ju.ECS
 
 		public void TearDown()
 		{
-			for (int i = 0; i < tearDownSystems.Count; ++i)
+			for (int i = 0, count = tearDownSystems.Count; i < count; ++i)
 			{
 				tearDownSystems[i].TearDown();
 			}
@@ -76,7 +76,7 @@ namespace Ju.ECS
 
 		public void ActivateReactiveSystems()
 		{
-			for (int i = 0; i < executeSystems.Count; ++i)
+			for (int i = 0, count = executeSystems.Count; i < count; ++i)
 			{
 				var system = executeSystems[i];
 
@@ -94,7 +94,7 @@ namespace Ju.ECS
 
 		public void DeactivateReactiveSystems()
 		{
-			for (int i = 0; i < executeSystems.Count; ++i)
+			for (int i = 0, count = executeSystems.Count; i < count; ++i)
 			{
 				var system = executeSystems[i];
 
@@ -112,7 +112,7 @@ namespace Ju.ECS
 
 		public void ClearReactiveSystems()
 		{
-			for (int i = 0; i < executeSystems.Count; ++i)
+			for (int i = 0, count = executeSystems.Count; i < count; ++i)
 			{
 				var system = executeSystems[i];
 

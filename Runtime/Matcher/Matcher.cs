@@ -98,7 +98,7 @@ namespace Ju.ECS
 		{
 			if (types != null)
 			{
-				for (int i = 0; i < types.Count; ++i)
+				for (int i = 0, count = types.Count; i < count; ++i)
 				{
 					if (!target.Contains(types[i]))
 					{

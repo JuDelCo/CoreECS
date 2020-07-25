@@ -1,15 +1,20 @@
 {
   "name": "com.judelco.core.ecs",
-  "displayName": "JuDelCo Core ECS",
+  "displayName": "JuCore ECS",
   "description": "Deterministic lightweight ECS framework",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "unity": "2018.3",
-  "dependencies": {
-  },
+  "dependencies": {},
   "type": "library",
   "license": "MIT",
   "keywords": [
-    "core"
+    "core",
+    "jucore",
+    "entity",
+    "component",
+    "system",
+    "ecs",
+    "deterministic"
   ],
   "author": {
     "name": "JuDelCo",

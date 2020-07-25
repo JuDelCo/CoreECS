@@ -1,7 +1,7 @@
-Core ECS
+JuCore ECS
 =====================
 
-Core ECS is a deterministic lightweight ECS framework.
+JuCore ECS is a deterministic lightweight ECS framework.
 
 It's heavily inspired in Entitas, but with some differences:
 
@@ -11,16 +11,14 @@ It's heavily inspired in Entitas, but with some differences:
 - No GC collections (when reusing destroyed entities)
 - Similar perfomance (10~15% less, but handles well all requirements for a game)
 
-This package will follow a [semantic versioning](http://semver.org/).
-
 Any feedback is welcome !
 
 
 See also
 =====================
 
-- [Core](https://github.com/JuDelCo/Core) - Core package base (service locator and core services)
-- [Core Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics and IK
+- [JuCore](https://github.com/JuDelCo/Core) - Core package base (service locator and core services)
+- [JuCore Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics and IK
 
 
 Install
@@ -29,7 +27,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git",
+	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.5.1",
 ```
 
 otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.

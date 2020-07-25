@@ -97,7 +97,7 @@ namespace Ju.ECS
 				group = new Group(matcher);
 				groupCache.Add(matcher, group);
 
-				for (int i = 0; i < entities.Count; ++i)
+				for (int i = 0, count = entities.Count; i < count; ++i)
 				{
 					group.HandleEntitySilently(entities[i]);
 				}
@@ -155,12 +155,12 @@ namespace Ju.ECS
 					groupEvents = new List<GroupChangedEvent>(100);
 				}
 
-				for (int i = 0; i < groups.Count; ++i)
+				for (int i = 0, count = groups.Count; i < count; ++i)
 				{
 					groupEvents.Add(groups[i].HandleEntity(entity));
 				}
 
-				for (int i = 0; i < groupEvents.Count; ++i)
+				for (int i = 0, count = groupEvents.Count; i < count; ++i)
 				{
 					if (groupEvents[i] != null)
 					{
@@ -179,7 +179,7 @@ namespace Ju.ECS
 			{
 				var groups = groupsForType[componentTypeId];
 
-				for (int i = 0; i < groups.Count; ++i)
+				for (int i = 0, count = groups.Count; i < count; ++i)
 				{
 					groups[i].UpdateEntity(entity);
 				}
