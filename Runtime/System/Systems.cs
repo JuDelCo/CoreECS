@@ -4,10 +4,10 @@ namespace Ju.ECS
 {
 	public class Systems : IInitializeSystem, IExecuteSystem, ICleanupSystem, ITearDownSystem
 	{
-		private List<IInitializeSystem> initializeSystems;
-		private List<IExecuteSystem> executeSystems;
-		private List<ICleanupSystem> cleanupSystems;
-		private List<ITearDownSystem> tearDownSystems;
+		private readonly List<IInitializeSystem> initializeSystems;
+		private readonly List<IExecuteSystem> executeSystems;
+		private readonly List<ICleanupSystem> cleanupSystems;
+		private readonly List<ITearDownSystem> tearDownSystems;
 
 		public Systems()
 		{
@@ -19,24 +19,24 @@ namespace Ju.ECS
 
 		public Systems Add(ISystem system)
 		{
-			if (system is IInitializeSystem)
+			if (system is IInitializeSystem initializeSystem)
 			{
-				initializeSystems.Add((IInitializeSystem)system);
+				initializeSystems.Add(initializeSystem);
 			}
 
-			if (system is IExecuteSystem)
+			if (system is IExecuteSystem executeSystem)
 			{
-				executeSystems.Add((IExecuteSystem)system);
+				executeSystems.Add(executeSystem);
 			}
 
-			if (system is ICleanupSystem)
+			if (system is ICleanupSystem cleanupSystem)
 			{
-				cleanupSystems.Add((ICleanupSystem)system);
+				cleanupSystems.Add(cleanupSystem);
 			}
 
-			if (system is ITearDownSystem)
+			if (system is ITearDownSystem tearDownSystem)
 			{
-				tearDownSystems.Add((ITearDownSystem)system);
+				tearDownSystems.Add(tearDownSystem);
 			}
 
 			return this;
@@ -80,14 +80,14 @@ namespace Ju.ECS
 			{
 				var system = executeSystems[i];
 
-				if (system is IReactiveSystem)
+				if (system is IReactiveSystem reactiveSystem)
 				{
-					((IReactiveSystem)system).Activate();
+					reactiveSystem.Activate();
 				}
 
-				if (system is Systems)
+				if (system is Systems systems)
 				{
-					((Systems)system).ActivateReactiveSystems();
+					systems.ActivateReactiveSystems();
 				}
 			}
 		}
@@ -98,14 +98,14 @@ namespace Ju.ECS
 			{
 				var system = executeSystems[i];
 
-				if (system is IReactiveSystem)
+				if (system is IReactiveSystem reactiveSystem)
 				{
-					((IReactiveSystem)system).Deactivate();
+					reactiveSystem.Deactivate();
 				}
 
-				if (system is Systems)
+				if (system is Systems systems)
 				{
-					((Systems)system).DeactivateReactiveSystems();
+					systems.DeactivateReactiveSystems();
 				}
 			}
 		}
@@ -116,14 +116,14 @@ namespace Ju.ECS
 			{
 				var system = executeSystems[i];
 
-				if (system is IReactiveSystem)
+				if (system is IReactiveSystem reactiveSystem)
 				{
-					((IReactiveSystem)system).Clear();
+					reactiveSystem.Clear();
 				}
 
-				if (system is Systems)
+				if (system is Systems systems)
 				{
-					((Systems)system).ClearReactiveSystems();
+					systems.ClearReactiveSystems();
 				}
 			}
 		}

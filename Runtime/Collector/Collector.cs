@@ -6,10 +6,10 @@ namespace Ju.ECS
 	public class Collector : ICollector
 	{
 		private bool[] collectedEntitiesCheck;
-		private List<IEntity> collectedEntities;
-		private IGroup group;
-		private GroupEvent groupEvent;
-		private GroupChangedEvent onEntityGroupEventCache;
+		private readonly List<IEntity> collectedEntities;
+		private readonly IGroup group;
+		private readonly GroupEvent groupEvent;
+		private readonly GroupChangedEvent onEntityGroupEventCache;
 
 		private Collector()
 		{

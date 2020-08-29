@@ -8,9 +8,9 @@ namespace Ju.ECS
 		public event GroupChangedEvent OnEntityAdded;
 		public event GroupChangedEvent OnEntityRemoved;
 
-		private IMatcher matcher;
+		private readonly IMatcher matcher;
+		private readonly List<IEntity> entities;
 		private bool[] entitiesCheck;
-		private List<IEntity> entities;
 
 		public Group(IMatcher matcher)
 		{

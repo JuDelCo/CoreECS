@@ -27,7 +27,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.5.1",
+	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.6.0",
 ```
 
 otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.

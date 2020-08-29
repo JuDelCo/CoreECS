@@ -12,18 +12,18 @@ namespace Ju.ECS
 
 		private static int contextIdGenerator = 0;
 
-		private int contextId;
-		private int componentTypeCount;
-		private List<IEntity> entities;
-		private Stack<IEntity> reausableEntities;
-		private List<IEntity> retainedEntities;
-		private Dictionary<int, List<IGroup>> groupsForType;
-		private Dictionary<IMatcher, IGroup> groupCache;
-		private Stack<List<GroupChangedEvent>> eventCache;
-		private EntityComponentChangedEvent onEntityComponentAddedOrRemovedCache;
-		private EntityComponentReplacedEvent onEntityComponentReplacedCache;
-		private EntityEvent onEntityReleaseCache;
-		private EntityEvent onEntityDestroyCache;
+		private readonly int contextId;
+		private readonly int componentTypeCount;
+		private readonly List<IEntity> entities;
+		private readonly Stack<IEntity> reausableEntities;
+		private readonly List<IEntity> retainedEntities;
+		private readonly Dictionary<int, List<IGroup>> groupsForType;
+		private readonly Dictionary<IMatcher, IGroup> groupCache;
+		private readonly Stack<List<GroupChangedEvent>> eventCache;
+		private readonly EntityComponentChangedEvent onEntityComponentAddedOrRemovedCache;
+		private readonly EntityComponentReplacedEvent onEntityComponentReplacedCache;
+		private readonly EntityEvent onEntityReleaseCache;
+		private readonly EntityEvent onEntityDestroyCache;
 		private uint uuidGenerator = 0;
 		private uint entityIdCounter = 0;
 
@@ -86,7 +86,7 @@ namespace Ju.ECS
 
 		public IGroup GetGroup(IMatcher matcher)
 		{
-			IGroup group = null;
+			IGroup group;
 
 			if (groupCache.ContainsKey(matcher))
 			{

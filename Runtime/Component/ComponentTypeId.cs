@@ -10,7 +10,7 @@ namespace Ju.ECS.Internal
 		public static Stack<int> UnusedIndices => unusedIndices;
 
 		private static T[] componentArray = new T[0];
-		private static Stack<int> unusedIndices = new Stack<int>(10000);
+		private static readonly Stack<int> unusedIndices = new Stack<int>(10000);
 
 		public static int New()
 		{
@@ -98,7 +98,7 @@ namespace Ju.ECS.Internal
 	public static class ComponentType
 	{
 		private static int typeIdGenerator = 0;
-		private static Dictionary<Type, int> componentTypeIds = new Dictionary<Type, int>();
+		private static readonly Dictionary<Type, int> componentTypeIds = new Dictionary<Type, int>();
 
 		public static int GetId(Type type)
 		{

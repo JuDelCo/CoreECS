@@ -4,8 +4,8 @@ namespace Ju.ECS
 {
 	public abstract class ReactiveSystem : IReactiveSystem
 	{
-		private ICollector collector;
-		private List<IEntity> entities;
+		private readonly ICollector collector;
+		private readonly List<IEntity> entities;
 
 		public ReactiveSystem(IContext context)
 		{

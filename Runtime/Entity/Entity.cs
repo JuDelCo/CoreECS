@@ -11,12 +11,12 @@ namespace Ju.ECS
 		public event EntityEvent OnRelease;
 		public event EntityEvent OnDestroy;
 
-		private int contextId;
+		private readonly int contextId;
+		private readonly List<int> componentTypes;
+		private readonly int[] componentPoolIndices;
+		private readonly Stack<int>[] componentUnusedIndices;
+		private readonly uint uuid;
 		private bool isEnabled;
-		private List<int> componentTypes;
-		private int[] componentPoolIndices;
-		private Stack<int>[] componentUnusedIndices;
-		private uint uuid;
 		private uint entityId;
 		private int retainCount = 0;
 

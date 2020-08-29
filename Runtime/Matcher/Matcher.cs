@@ -4,10 +4,10 @@ namespace Ju.ECS
 {
 	public partial class Matcher : IMatcher
 	{
-		private List<int> allOfTypes;
-		private List<int> anyOfTypes;
-		private List<int> noneOfTypes;
-		private List<int> allTypes;
+		private readonly List<int> allOfTypes;
+		private readonly List<int> anyOfTypes;
+		private readonly List<int> noneOfTypes;
+		private readonly List<int> allTypes;
 
 		private bool isHashCached = false;
 		private int cachedHash = 0;
