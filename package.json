@@ -2,7 +2,7 @@
   "name": "com.judelco.core.ecs",
   "displayName": "JuCore ECS",
   "description": "Deterministic lightweight ECS framework",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "unity": "2018.3",
   "dependencies": {},
   "type": "library",
@@ -18,7 +18,7 @@
   ],
   "author": {
     "name": "JuDelCo",
-    "url": "https://github.com/JuDelCo"
+    "url": "https://twitter.com/JuDelCo"
   },
   "repository": {
     "type": "git",

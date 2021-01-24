@@ -27,7 +27,7 @@ Install
 If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.6.0",
+	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.7.0",
 ```
 
 otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
@@ -169,7 +169,7 @@ public class RenderPositionSystem : ReactiveSystem
 The MIT License (MIT)
 =====================
 
-Copyright © 2019-2020 Juan Delgado (JuDelCo)
+Copyright © 2019-2021 Juan Delgado (JuDelCo)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
