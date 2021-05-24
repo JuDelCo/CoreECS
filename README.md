@@ -21,16 +21,14 @@ See also
 - [JuCore Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics, noise functions and IK
 
 
-Install
+Install (Unity)
 =====================
 
-If you are using Unity, update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
+Update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.7.0",
+	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.8.0",
 ```
-
-otherwise, use this package as it is in native C# applications, as it doesn't have dependencies with Unity.
 
 
 Documentation
