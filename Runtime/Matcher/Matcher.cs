@@ -103,20 +103,18 @@ namespace Ju.ECS
 			{
 				for (int i = 0, count = types.Count; i < count; ++i)
 				{
-					if (!target.Contains(types[i]))
+					int type = types[i];
+
+					if (!target.Contains(type))
 					{
-						target.Add(types[i]);
-						AddType(types[i]);
+						target.Add(type);
+
+						if (!allTypes.Contains(type))
+						{
+							allTypes.Add(type);
+						}
 					}
 				}
-			}
-		}
-
-		private void AddType(int type)
-		{
-			if (!allTypes.Contains(type))
-			{
-				allTypes.Add(type);
 			}
 		}
 

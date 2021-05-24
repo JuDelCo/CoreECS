@@ -84,7 +84,16 @@ namespace Ju.ECS
 		{
 			if (entity.GetUuid() >= collectedEntitiesCheck.Length)
 			{
-				IncreaseCheckArray((int)entity.GetUuid());
+				// Increase Check Array
+				{
+					int target = (int)entity.GetUuid();
+					int inc = 10000;
+					target = (target / inc) * inc + ((target % inc) > (inc / 2) ? (inc * 2) : inc);
+
+					var newCollectedEntitiesCheck = new bool[target];
+					Array.Copy(collectedEntitiesCheck, newCollectedEntitiesCheck, collectedEntitiesCheck.Length);
+					collectedEntitiesCheck = newCollectedEntitiesCheck;
+				}
 			}
 
 			if (!collectedEntitiesCheck[entity.GetUuid()])
@@ -93,16 +102,6 @@ namespace Ju.ECS
 				collectedEntities.Add(entity);
 				entity.Retain();
 			}
-		}
-
-		private void IncreaseCheckArray(int target)
-		{
-			int inc = 10000;
-			target = (target / inc) * inc + ((target % inc) > (inc / 2) ? (inc * 2) : inc);
-
-			var newCollectedEntitiesCheck = new bool[target];
-			Array.Copy(collectedEntitiesCheck, newCollectedEntitiesCheck, collectedEntitiesCheck.Length);
-			collectedEntitiesCheck = newCollectedEntitiesCheck;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 
 ; ---------------------------
-; 2020 Juan Delgado (JuDelCo)
+; 2021 Juan Delgado (JuDelCo)
 ; ---------------------------
 
 ; Basic text editor config
@@ -10,22 +10,11 @@ indent_style = tab
 indent_size = 4
 charset = utf-8
 
-; -----------------------------------------------------------------------------
-; Important:
-;
-; 	1) Create a new file in
-;		%UnityEditor_Folder%/Editor/Data/Resources/PackageManager/.editorconfig
-;
-; 	2) Add this to the file to prevent Unity built-in packages to be analyzed:
-;
-;		[**.cs]
-;		generated_code = true
-;
-;	3) You will need to repeat that for each Unity installation.
-;
-; -----------------------------------------------------------------------------
-
-; Code analysis - Ignore rules (Unity3D project)
+; Code analysis - Ignore rules (NET native project & Unity3D project)
+[**bin/**.cs]
+generated_code = true
+[**obj/**.cs]
+generated_code = true
 [**PackageCache/**.cs]
 generated_code = true
 [Assets/Plugins/**.cs]
@@ -39,6 +28,7 @@ csharp_prefer_simple_default_expression = false:none
 csharp_prefer_simple_using_statement = false:none
 csharp_style_prefer_switch_expression = false:none
 csharp_style_conditional_delegate_call = false:none
+csharp_style_implicit_object_creation_when_type_is_apparent = false:none
 dotnet_code_quality_unused_parameters = non_public:none
 dotnet_style_object_initializer = false:silent
 dotnet_style_collection_initializer = false:silent

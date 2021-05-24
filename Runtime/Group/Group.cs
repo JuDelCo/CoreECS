@@ -38,7 +38,7 @@ namespace Ju.ECS
 
 			if (entities.Count > 1)
 			{
-				throw new Exception(string.Format("The group doesn't have a single entity (count: {0})", entities.Count));
+				throw new Exception($"The group doesn't have a single entity (count: {entities.Count})");
 			}
 			else if (entities.Count == 1)
 			{

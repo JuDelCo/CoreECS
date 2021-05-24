@@ -17,8 +17,8 @@ Any feedback is welcome !
 See also
 =====================
 
-- [JuCore](https://github.com/JuDelCo/Core) - Core package base (service locator and core services)
-- [JuCore Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics and IK
+- [JuCore](https://github.com/JuDelCo/Core) - Core package base (service locator and useful services)
+- [JuCore Math](https://github.com/JuDelCo/CoreMath) - Linear algebra math library, also 2D/3D physics, noise functions and IK
 
 
 Install
@@ -169,7 +169,7 @@ public class RenderPositionSystem : ReactiveSystem
 The MIT License (MIT)
 =====================
 
-Copyright © 2019-2021 Juan Delgado (JuDelCo)
+Copyright © 2019-2021 Juan Delgado (@JuDelCo)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

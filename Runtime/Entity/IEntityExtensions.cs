@@ -14,7 +14,7 @@ namespace Ju.ECS
 
 			if (entity.HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity already has a component of type {0}", typeof(T).Name));
+				throw new Exception($"Entity already has a component of type {typeof(T).Name}");
 			}
 
 			var componentPoolIndex = ComponentLookup<T>.New();
@@ -48,7 +48,7 @@ namespace Ju.ECS
 
 			if (!entity.HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity doesn't have a component of type {0}", typeof(T).Name));
+				throw new Exception($"Entity doesn't have a component of type {typeof(T).Name}");
 			}
 
 			entity.RemoveComponent(componentTypeId);
@@ -88,7 +88,7 @@ namespace Ju.ECS
 
 			if (!entity.HasComponent(componentTypeId))
 			{
-				throw new Exception(string.Format("Entity doesn't have a component of type {0}", typeof(T).Name));
+				throw new Exception($"Entity doesn't have a component of type {typeof(T).Name}");
 			}
 
 			return ComponentLookup<T>.Array[entity.GetComponentPoolIndex(componentTypeId)];
