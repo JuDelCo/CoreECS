@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.8.0</Version>
+    <Version>1.9.0</Version>
     <Authors>Juan Delgado (@JuDelCo)</Authors>
     <Title>JuCore.ECS</Title>
     <AssemblyName>JuCore.ECS</AssemblyName>
     <Description>Deterministic lightweight ECS framework</Description>
     <RepositoryType>git</RepositoryType>
+	<PackageId>JuDelCo.Lib.CoreECS</PackageId>
+    <PackageProjectUrl>https://github.com/JuDelCo/CoreECS</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JuDelCo/CoreECS</RepositoryUrl>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup>

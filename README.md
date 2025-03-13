@@ -27,7 +27,7 @@ Install (Unity)
 Update the dependencies in the ```/Packages/manifest.json``` file in your project folder with:
 
 ```
-	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.8.0",
+	"com.judelco.core.ecs": "https://github.com/JuDelCo/CoreECS.git#v1.9.0",
 ```
 
 
@@ -167,7 +167,7 @@ public class RenderPositionSystem : ReactiveSystem
 The MIT License (MIT)
 =====================
 
-Copyright © 2019-2021 Juan Delgado (@JuDelCo)
+Copyright © 2019-2025 Juan Delgado (@JuDelCo)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
