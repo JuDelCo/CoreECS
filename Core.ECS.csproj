@@ -1,20 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.9.0</Version>
+    <Version>1.10.0</Version>
     <Authors>Juan Delgado (@JuDelCo)</Authors>
     <Title>JuCore.ECS</Title>
     <AssemblyName>JuCore.ECS</AssemblyName>
     <Description>Deterministic lightweight ECS framework</Description>
     <RepositoryType>git</RepositoryType>
-	<PackageId>JuDelCo.Lib.CoreECS</PackageId>
+    <PackageId>JuDelCo.Lib.CoreECS</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/JuDelCo/CoreECS</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JuDelCo/CoreECS</RepositoryUrl>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
   <PropertyGroup>
-  	<OutputType>Library</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>

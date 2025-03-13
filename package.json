@@ -1,27 +1,27 @@
 {
-  "name": "com.judelco.core.ecs",
-  "displayName": "JuCore ECS",
-  "description": "Deterministic lightweight ECS framework",
-  "version": "1.9.0",
-  "unity": "2018.3",
-  "dependencies": {},
-  "type": "library",
-  "license": "MIT",
-  "keywords": [
-    "core",
-    "jucore",
-    "entity",
-    "component",
-    "system",
-    "ecs",
-    "deterministic"
-  ],
-  "author": {
-    "name": "JuDelCo",
-    "url": "https://twitter.com/JuDelCo"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JuDelCo/CoreECS.git"
-  }
+	"name": "com.judelco.core.ecs",
+	"displayName": "JuCore ECS",
+	"description": "Deterministic lightweight ECS framework",
+	"version": "1.10.0",
+	"unity": "2018.3",
+	"dependencies": {},
+	"type": "library",
+	"license": "MIT",
+	"keywords": [
+		"core",
+		"jucore",
+		"entity",
+		"component",
+		"system",
+		"ecs",
+		"deterministic"
+	],
+	"author": {
+		"name": "JuDelCo",
+		"url": "https://twitter.com/JuDelCo"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JuDelCo/CoreECS.git"
+	}
 }

@@ -1,6 +1,13 @@
 
 # Changelog
 
+## [1.10.0] - 2025-03-13
+
+### Improved
+
+- Include README.md in the nuget package.
+- Update README.md with instructions to install the package.
+
 ## [1.9.0] - 2025-03-13
 
 ### Improved
@@ -22,5 +29,6 @@
 - Update .editorconfig to include generated folders by dotnet compiler.
 - Update .gitignore to exclude generated folders by dotnet compiler.
 
+[1.10.0]: https://github.com/JuDelCo/CoreECS/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/JuDelCo/CoreECS/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/JuDelCo/CoreECS/compare/v1.7.0...v1.8.0
