@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [1.12.0] - 2025-03-16
+
+- Add a .targets file to automatically include and compile the source files in consumer projects for seamless source-only package integration.
+
 ## [1.11.0] - 2025-03-16
 
 ### Changed

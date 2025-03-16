@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Title>JuCore.ECS</Title>
-    <Version>1.11.0</Version>
+    <Version>1.12.0</Version>
     <AssemblyName>JuCore.ECS</AssemblyName>
     <Authors>Juan Delgado (@JuDelCo)</Authors>
 	<Copyright>Copyright (c) 2019-2025 Juan Delgado (@JuDelCo)</Copyright>
@@ -20,6 +20,7 @@
     <None Include="README.md" Pack="true" PackagePath="/"/>
     <None Include="CHANGELOG.md" Pack="true" PackagePath="/"/>
     <None Include="LICENSE.md" Pack="true" PackagePath="/"/>
+    <None Include="buildTransitive/CoreECS.targets" Pack="true" PackagePath="buildTransitive" />
     <Content Include="**/*.cs" Exclude="bin/**;obj/**" Pack="true" PackagePath="contentFiles/cs/any/" />
   </ItemGroup>
 
