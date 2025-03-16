@@ -1,6 +1,22 @@
 
 # Changelog
 
+## [1.11.0] - 2025-03-16
+
+### Changed
+
+- Change the NuGet package type to a source-only package.
+- Add a new Directory.Build.props file to improve local development for Godot.
+- Configure local development to target net8.0 when working with Godot.
+
+### Improved
+
+- Include LICENSE.md and CHANGELOG.md files in the final NuGet package.
+- Rename the .csproj file to remove an extra dot from its filename.
+- Update tags in package.json.
+- Update the .editorconfig file.
+- Update VSCode settings.json.
+
 ## [1.10.0] - 2025-03-13
 
 ### Improved
@@ -28,7 +44,3 @@
 - Update VSCode settings.json file to handle generated folders by dotnet compiler.
 - Update .editorconfig to include generated folders by dotnet compiler.
 - Update .gitignore to exclude generated folders by dotnet compiler.
-
-[1.10.0]: https://github.com/JuDelCo/CoreECS/compare/v1.9.0...v1.10.0
-[1.9.0]: https://github.com/JuDelCo/CoreECS/compare/v1.8.0...v1.9.0
-[1.8.0]: https://github.com/JuDelCo/CoreECS/compare/v1.7.0...v1.8.0

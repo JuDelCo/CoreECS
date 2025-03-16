@@ -2,7 +2,7 @@
 	"name": "com.judelco.core.ecs",
 	"displayName": "JuCore ECS",
 	"description": "Deterministic lightweight ECS framework",
-	"version": "1.10.0",
+	"version": "1.11.0",
 	"unity": "2018.3",
 	"dependencies": {},
 	"type": "library",
@@ -10,11 +10,17 @@
 	"keywords": [
 		"core",
 		"jucore",
+		"ecs",
+		"entitycomponentsystem",
 		"entity",
 		"component",
 		"system",
-		"ecs",
-		"deterministic"
+		"deterministic",
+		"lightweight",
+		"gamedev",
+		"framework",
+		"simulation",
+		"performance"
 	],
 	"author": {
 		"name": "JuDelCo",
