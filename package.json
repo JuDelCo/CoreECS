@@ -2,7 +2,7 @@
 	"name": "com.judelco.core.ecs",
 	"displayName": "JuCore ECS",
 	"description": "Deterministic lightweight ECS framework",
-	"version": "1.12.0",
+	"version": "1.13.0",
 	"unity": "2018.3",
 	"dependencies": {},
 	"type": "library",
