@@ -1,6 +1,13 @@
 
 # Changelog
 
+## [1.14.0] - 2025-03-26
+
+### Fixed
+
+- Fix warnings when the 'Nullable' NET project property is enabled.
+- Add missing .meta files for Unity.
+
 ## [1.13.0] - 2025-03-17
 
 ### Fixed

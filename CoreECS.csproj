@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Title>JuCore.ECS</Title>
-    <Version>1.13.0</Version>
+    <Version>1.14.0</Version>
     <AssemblyName>JuCore.ECS</AssemblyName>
     <Authors>Juan Delgado (@JuDelCo)</Authors>
 	<Copyright>Copyright (c) 2019-2025 Juan Delgado (@JuDelCo)</Copyright>
